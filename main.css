@@ -169,6 +169,7 @@ body.modal-open {
    font-weight: 500;
    line-height: 130%;
    text-transform: uppercase;
+   text-align: left;
 }
 
 @media (max-width: 768px) {
