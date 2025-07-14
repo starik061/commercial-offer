@@ -526,11 +526,13 @@ body.modal-open {
    cursor: zoom-in;
 }
 
-.construction-photo-wrapper {
+.construction-photo-wrapper,
+.construction-photo-wrapper-mobile {
    position: relative;
 }
 
-.construction-photo-wrapper .zoom-icon-wrapper {
+.construction-photo-wrapper .zoom-icon-wrapper,
+.construction-photo-wrapper-mobile .zoom-icon-wrapper {
    position: absolute;
    top: 2px;
    right: 3px;
@@ -548,7 +550,10 @@ body.modal-open {
 
 .construction-photo-wrapper:hover .zoom-icon-wrapper,
 .construction-photo-wrapper:focus .zoom-icon-wrapper,
-.construction-photo-wrapper:active .zoom-icon-wrapper {
+.construction-photo-wrapper:active .zoom-icon-wrapper,
+.construction-photo-wrapper-mobile:hover .zoom-icon-wrapper,
+.construction-photo-wrapper-mobile:focus .zoom-icon-wrapper,
+.construction-photo-wrapper-mobile:active .zoom-icon-wrapper {
    background-color: #FC6B40;
 }
 
@@ -563,7 +568,11 @@ body.modal-open {
 
 .construction-photo-wrapper:hover .zoom-icon,
 .construction-photo-wrapper:focus .zoom-icon,
-.construction-photo-wrapper:active .zoom-icon {
+.construction-photo-wrapper:active .zoom-icon,
+
+.construction-photo-wrapper-mobile:hover .zoom-icon,
+.construction-photo-wrapper-mobile:focus .zoom-icon,
+.construction-photo-wrapper-mobile:active .zoom-icon {
    color: #fff;
 }
 
@@ -606,32 +615,6 @@ body.modal-open {
    font-weight: 700;
    line-height: 130%;
 }
-
-/* .select-construction-checkbox+span {
-   display: flex;
-   height: 30px;
-   justify-content: center;
-   align-items: center;
-   border: none;
-   border-radius: 4px;
-   background-color: #FC6B40;
-   color: #FFF;
-   font-size: 13px;
-   font-style: normal;
-   font-weight: 700;
-   line-height: 130%;
-   transition: all 0.1s ease-in-out;
-   cursor: pointer;
-}
-
-.select-construction-checkbox:checked+span {
-   border: none;
-   border-radius: 4px;
-   border: 1px solid #CDD4D9;
-   background-color: #FFF;
-   font-size: 13px;
-   color: #3D445C;
-} */
 
 .select-button .to-choose {
    display: flex;
@@ -1253,8 +1236,6 @@ tr.selected {
    overflow: hidden;
 }
 
-
-
 .close-map-modal-btn--cross {
    display: flex;
    justify-content: center;
@@ -1275,7 +1256,6 @@ tr.selected {
    flex-direction: column;
    justify-content: center;
    align-items: center;
-   /* width: 100%; */
 }
 
 .modal-map {
@@ -1443,12 +1423,17 @@ tr.selected {
 .map-modal-mobile {
    width: 100%;
    max-width: 450px;
-   max-height: 90vh;
+   max-height: 100vh;
    overflow: scroll;
    padding-top: 16px;
    padding-bottom: 16px;
    background-color: #fff;
 }
+
+.construction-photo-wrapper-mobile {
+   width: 66px;
+}
+
 
 .map-modal-mobile-container {
    padding-left: 16px;
