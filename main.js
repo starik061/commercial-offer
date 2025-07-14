@@ -85,14 +85,14 @@ if (submitBtn && backdrop) {
 }
 
 
-// map and photo  modal functionality
+// map and photo  modal functionality on desktop
 document.querySelectorAll(".close-map-modal-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelector(".map-modal-backdrop").style.display = "none";
   });
 });
 
-const showMapModalBtn = document.querySelector(".map-btn");
+const showMapModalBtn = document.querySelector(".constructions-table.desktop .map-btn");
 const showPhotoModalBtn = document.querySelector(".construction-photo");
 const mapBackdrop = document.querySelector(".map-modal-backdrop");
 const mapWidjet = document.querySelector(".modal-map.map-widget");
@@ -116,9 +116,70 @@ if (showPhotoModalBtn && mapBackdrop) {
   });
 }
 
+// map and photo  modal functionality on mobile
+document.addEventListener("DOMContentLoaded", () => {
+  const mapBackdropMobile = document.querySelector(".map-modal-backdrop-mobile");
+  const showMapModalBtnMobile = document.querySelector(".mobile-table-info .map-btn");
+  const mapRadio = document.getElementById("mapTab");
+  const photoRadio = document.getElementById("photoTab");
+  const mapImage = document.getElementById("mapImage");
+  const photoImage = document.getElementById("photoImage");
+
+  const closeButtons = document.querySelectorAll(".close-map-modal-btn--cross-mobile");
+  const photoTriggers = document.querySelectorAll(".construction-photo-wrapper");
+
+  // 🔁 Показать нужное изображение
+  function toggleMapPhoto() {
+    if (mapRadio.checked) {
+      mapImage.style.display = "block";
+      photoImage.style.display = "none";
+    } else {
+      mapImage.style.display = "none";
+      photoImage.style.display = "block";
+    }
+  }
+
+  // ✖ Закрытие модалки
+  closeButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (mapBackdropMobile) {
+        mapBackdropMobile.style.display = "none";
+      }
+    });
+  });
+
+  // 📍 Открытие модалки через кнопку "Карта"
+  if (showMapModalBtnMobile && mapBackdropMobile) {
+    showMapModalBtnMobile.addEventListener("click", () => {
+      mapRadio.checked = true;           // Активировать вкладку "Мапа"
+      mapBackdropMobile.style.display = "flex";
+      toggleMapPhoto();
+    });
+  }
+
+  // 🖼 Открытие модалки по клику на фото
+  photoTriggers.forEach(wrapper => {
+    wrapper.addEventListener("click", () => {
+      photoRadio.checked = true;         // Активировать вкладку "Фото"
+      mapBackdropMobile.style.display = "flex";
+      toggleMapPhoto();
+    });
+  });
+
+  // 🎛 Переключение фото/карты при изменении radio
+  if (mapRadio && photoRadio) {
+    mapRadio.addEventListener("change", toggleMapPhoto);
+    photoRadio.addEventListener("change", toggleMapPhoto);
+  }
+
+  // 🏁 Инициализация состояния при загрузке
+  toggleMapPhoto();
+});
+
+
 // if mobile table checked - change bg color
 document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll(".constructions-table-mobile.select-button").forEach(function (button) {
+  document.querySelectorAll(".constructions-table-mobile .select-button").forEach(function (button) {
     button.addEventListener("click", function (event) {
       // Находим ближайший родительский <table>
       const table = button.closest("table.constructions-table-mobile");
@@ -140,4 +201,30 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
+});
+
+
+// show map or photo in mobile modal window
+
+document.addEventListener("DOMContentLoaded", function () {
+  const mapRadio = document.getElementById('mapTab');
+  const photoRadio = document.getElementById('photoTab');
+
+  const mapImage = document.getElementById('mapImage');
+  const photoImage = document.getElementById('photoImage');
+
+  function toggleImages() {
+    if (mapRadio.checked) {
+      mapImage.style.display = 'block';
+      photoImage.style.display = 'none';
+    } else {
+      mapImage.style.display = 'none';
+      photoImage.style.display = 'block';
+    }
+  }
+
+  mapRadio.addEventListener('change', toggleImages);
+  photoRadio.addEventListener('change', toggleImages);
+
+  toggleImages(); // сразу вызвать
 });

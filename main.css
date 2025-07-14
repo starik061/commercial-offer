@@ -1081,8 +1081,8 @@ tr.selected {
    position: absolute;
    top: 2px;
    left: 2px;
-   width: 20px;
-   height: 20px;
+   width: 18px;
+   height: 18px;
    background: white;
    border-radius: 50%;
    transition: transform 0.3s ease;
@@ -1122,7 +1122,7 @@ tr.selected {
    }
 }
 
-/* Morder modal CSS */
+/* Order modal CSS */
 
 .order-modal-backdrop {
    position: fixed;
@@ -1146,6 +1146,13 @@ tr.selected {
    height: 393px;
    flex-shrink: 0;
    flex-grow: 0;
+}
+
+@media (max-width: 768px) {
+   .order-modal {
+      width: 375px;
+      max-width: 100%;
+   }
 }
 
 .close-order-modal-btn--regular {
@@ -1330,15 +1337,17 @@ tr.selected {
 }
 
 .constructions-table-mobile {
-   width: 100%;
-   padding-top: 16px;
-   padding-bottom: 16px;
+   position: relative;
+   width: calc(100% + 32px);
+   padding: 16px;
    color: #3D445C;
    font-size: 13px;
    font-style: normal;
    font-weight: 400;
    line-height: 18px;
    border-spacing: 0 8px;
+   margin-left: -16px;
+   margin-right: -16px;
 }
 
 .constructions-table-mobile td {
@@ -1411,4 +1420,256 @@ tr.selected {
 .constructions-table-mobile.checked,
 .constructions-table tr.checked {
    background-color: #FFF0EC;
+}
+
+
+/* Mobile map modal CSS */
+
+.map-modal-backdrop-mobile {
+   position: fixed;
+   inset: 0;
+   background: rgba(0, 0, 0, 0.7);
+   display: none;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   z-index: 1000;
+}
+
+.map-modal-mobile {
+   width: 100%;
+   max-width: 450px;
+   padding-top: 16px;
+   padding-bottom: 16px;
+   background-color: #fff;
+}
+
+.map-modal-mobile-container {
+   padding-left: 16px;
+   padding-right: 16px;
+}
+
+.map-modal-mobile-container .header-wrapper {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding-bottom: 16px;
+   color: #3D445C;
+   font-size: 18px;
+   font-style: normal;
+   font-weight: 400;
+   line-height: 24px;
+   border-bottom: 1px solid #E8EBF1;
+}
+
+.map-modal-mobile-container .header-wrapper button {
+   background: none;
+   border: none;
+}
+
+.map-modal-mobile-container .tabs-wrapper {
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   gap: 20px;
+   padding-top: 24px;
+   padding-bottom: 22px;
+   color: #FC6B40;
+   font-family: "Helvetica Neue";
+   font-size: 14px;
+   font-style: normal;
+   font-weight: 500;
+   line-height: 130%;
+}
+
+.tab-label:has(input[type="radio"]:checked) span {
+   color: #3D445C;
+}
+
+.tab-label {
+   position: relative;
+}
+
+.tab-label::after {
+   display: none;
+   content: "";
+   position: absolute;
+   left: 0;
+   bottom: -22px;
+   width: 100%;
+   height: 2px;
+   background-color: #FC6B40;
+}
+
+.tab-label:has(input[type="radio"]:checked)::after {
+   display: block;
+}
+
+.mobile-modal-map {
+   display: block;
+   width: 100%;
+   height: 297px;
+   object-fit: cover;
+   margin-bottom: 16px;
+}
+
+.map-modal-mobile-container .location-text {
+   margin-bottom: 16px;
+   color: #3D445C;
+   font-size: 14px;
+   font-style: normal;
+   font-weight: 500;
+   line-height: 130%;
+}
+
+.map-modal-mobile-info-table {
+   border-collapse: separate;
+   border-spacing: 0 8px;
+   margin-bottom: 16px;
+   text-align: left;
+   vertical-align: middle;
+   color: #3D445C;
+   font-size: 13px;
+   font-style: normal;
+   font-weight: 400;
+   line-height: 18px;
+   width: 100%;
+}
+
+.map-modal-mobile-info-table tr {
+   width: 100%;
+   margin-bottom: 8px;
+}
+
+.map-modal-mobile-info-table .td-name {
+   width: 39%;
+}
+
+.availability-calendar-wrapper {
+   width: 100%;
+   border-radius: 8px;
+   margin-bottom: 16px;
+   border: 1px solid #F2F5FB;
+   overflow: hidden;
+}
+
+.calendar-title {
+   margin-bottom: 12px;
+   color: #3D445C;
+   font-size: 13px;
+   font-style: normal;
+   font-weight: 500;
+   line-height: 130%;
+}
+
+.availability-calendar-dates-wrapper {
+   display: flex;
+   justify-content: flex-start;
+   align-items: flex-start;
+   align-content: flex-start;
+   flex-wrap: wrap;
+   gap: 0
+}
+
+.availability-calendar-dates-wrapper span {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   color: #3D445C;
+   font-size: 13px;
+   font-style: normal;
+   font-weight: 500;
+   line-height: normal;
+   width: 50px;
+   height: 26px;
+   flex-shrink: 0;
+   background-color: #CDD4D9;
+   border: none;
+}
+
+.availability-calendar-dates-wrapper span.booked {
+   color: #FFF;
+   background-color: #FC6B40;
+}
+
+.availability-calendar-dates-wrapper span.available {
+   color: #FFF;
+   background-color: #4FB14B;
+}
+
+.map-modal-mobile-price-wrapper {
+   display: flex;
+   flex-direction: column;
+   justify-content: flex-start;
+   align-items: flex-start;
+   gap: 4px;
+   margin-bottom: 23px;
+   color: #8B8F9D;
+   font-size: 13px;
+   font-style: normal;
+   font-weight: 400;
+   line-height: 18px;
+}
+
+.map-modal-mobile-price-wrapper .price {
+   color: #3D445C;
+   font-size: 20px;
+   font-style: normal;
+   font-weight: 500;
+   line-height: 32px;
+}
+
+.select-construction-label-mobile {
+   display: block;
+   width: 100%;
+   max-width: 343px;
+   margin: 0 auto;
+}
+
+.select-button-mobile .to-choose {
+   width: 100%;
+   display: flex;
+   width: 343px;
+   height: 43px;
+   padding: 13px 24px;
+   justify-content: center;
+   align-items: center;
+   gap: 10px;
+   flex-shrink: 0;
+   border-radius: 4px;
+   background: #FC6B40;
+   color: #FFF;
+   font-size: 13px;
+   font-style: normal;
+   font-weight: 700;
+   cursor: pointer;
+}
+
+
+.select-button-mobile .choosen {
+   display: none;
+   width: 100%;
+   width: 343px;
+   height: 43px;
+   padding: 13px 24px;
+   justify-content: center;
+   align-items: center;
+   font-style: normal;
+   font-weight: 700;
+   line-height: 130%;
+   transition: all 0.1s ease-in-out;
+   cursor: pointer;
+   border-radius: 4px;
+   border: 1px solid #CDD4D9;
+   background-color: #FFF;
+   font-size: 13px;
+   color: #3D445C;
+}
+
+.select-construction-label-mobile:has(.select-construction-mobile-checkbox:checked) .to-choose {
+   display: none;
+}
+
+.select-construction-label-mobile:has(.select-construction-mobile-checkbox:checked) .choosen {
+   display: flex;
 }
