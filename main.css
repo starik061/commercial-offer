@@ -9,6 +9,10 @@ body {
    -moz-osx-font-smoothing: grayscale;
 }
 
+body.modal-open {
+   overflow: hidden;
+}
+
 .container-base {
    max-width: 960px;
    padding-right: 0;

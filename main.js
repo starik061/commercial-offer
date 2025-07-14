@@ -72,6 +72,7 @@ updatePagination();
 document.querySelectorAll(".close-order-modal-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelector(".order-modal-backdrop").style.display = "none";
+    document.body.classList.remove("modal-open");
   });
 });
 
@@ -81,6 +82,7 @@ const backdrop = document.querySelector(".order-modal-backdrop");
 if (submitBtn && backdrop) {
   submitBtn.addEventListener("click", () => {
     backdrop.style.display = "flex";
+    document.body.classList.add("modal-open");
   });
 }
 
@@ -89,6 +91,7 @@ if (submitBtn && backdrop) {
 document.querySelectorAll(".close-map-modal-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelector(".map-modal-backdrop").style.display = "none";
+    document.body.classList.remove("modal-open");
   });
 });
 
@@ -104,7 +107,7 @@ if (showMapModalBtn && mapBackdrop) {
     mapWidjet.style.display = "block";
     mapBackdrop.style.display = "flex";
     modalProductPhoto.style.display = "none";
-
+    document.body.classList.add("modal-open");
   });
 }
 
@@ -113,6 +116,7 @@ if (showPhotoModalBtn && mapBackdrop) {
     mapWidjet.style.display = "none";
     mapBackdrop.style.display = "flex";
     modalProductPhoto.style.display = "flex";
+    document.body.classList.add("modal-open");
   });
 }
 
@@ -144,6 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => {
       if (mapBackdropMobile) {
         mapBackdropMobile.style.display = "none";
+        document.body.classList.remove("modal-open");
       }
     });
   });
@@ -153,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showMapModalBtnMobile.addEventListener("click", () => {
       mapRadio.checked = true;           // Активировать вкладку "Мапа"
       mapBackdropMobile.style.display = "flex";
+      document.body.classList.add("modal-open");
       toggleMapPhoto();
     });
   }
@@ -162,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
     wrapper.addEventListener("click", () => {
       photoRadio.checked = true;         // Активировать вкладку "Фото"
       mapBackdropMobile.style.display = "flex";
+      document.body.classList.add("modal-open");
       toggleMapPhoto();
     });
   });
