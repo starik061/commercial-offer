@@ -96,14 +96,19 @@ document.querySelectorAll(".close-map-modal-btn").forEach(btn => {
 });
 
 const showMapModalBtn = document.querySelector(".constructions-table.desktop .map-btn");
-const showPhotoModalBtn = document.querySelector(".construction-photo");
+const showPhotoModalBtn = document.querySelector(".construction-photo-desktop");
 const mapBackdrop = document.querySelector(".map-modal-backdrop");
 const mapWidjet = document.querySelector(".modal-map.map-widget");
 const modalProductPhoto = document.querySelector(".modal-map.modal-photo");
 
 
 if (showMapModalBtn && mapBackdrop) {
-  showMapModalBtn.addEventListener("click", () => {
+  showMapModalBtn.addEventListener("click", (e) => {
+    // Не срабатывать, если клик по мобильной кнопке
+    if (e && e.target && e.target.closest('.mobile-table-info')) return;
+    // При открытии десктопной модалки явно скрываем мобильную
+    const mapBackdropMobile = document.querySelector(".map-modal-backdrop-mobile");
+    if (mapBackdropMobile) mapBackdropMobile.style.display = "none";
     mapWidjet.style.display = "block";
     mapBackdrop.style.display = "flex";
     modalProductPhoto.style.display = "none";
@@ -113,6 +118,9 @@ if (showMapModalBtn && mapBackdrop) {
 
 if (showPhotoModalBtn && mapBackdrop) {
   showPhotoModalBtn.addEventListener("click", () => {
+    // При открытии десктопной модалки явно скрываем мобильную
+    const mapBackdropMobile = document.querySelector(".map-modal-backdrop-mobile");
+    if (mapBackdropMobile) mapBackdropMobile.style.display = "none";
     mapWidjet.style.display = "none";
     mapBackdrop.style.display = "flex";
     modalProductPhoto.style.display = "flex";
@@ -130,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const photoImage = document.getElementById("photoImage");
 
   const closeButtons = document.querySelectorAll(".close-map-modal-btn--cross-mobile");
-  const photoTriggers = document.querySelectorAll(".construction-photo-wrapper");
+  const photoTriggers = document.querySelectorAll(".construction-photo-wrapper-mobile");
 
   // 🔁 Показать нужное изображение
   function toggleMapPhoto() {
@@ -155,11 +163,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 📍 Открытие модалки через кнопку "Карта"
   if (showMapModalBtnMobile && mapBackdropMobile) {
-    showMapModalBtnMobile.addEventListener("click", () => {
-      mapRadio.checked = true;           // Активировать вкладку "Мапа"
+    showMapModalBtnMobile.addEventListener("click", (e) => {
+      // Явно скрываем десктопную модалку
+      const mapBackdrop = document.querySelector(".map-modal-backdrop");
+      if (mapBackdrop) mapBackdrop.style.display = "none";
+      mapRadio.checked = true;           // Активировать вк��адку "Мапа"
       mapBackdropMobile.style.display = "flex";
       document.body.classList.add("modal-open");
       toggleMapPhoto();
+      // Остановить всплытие, чтобы не сработал обработчик на родителе
+      if (e && e.stopPropagation) e.stopPropagation();
     });
   }
 
