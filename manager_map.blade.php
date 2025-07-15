@@ -121,337 +121,1115 @@
             </div>
          </div>
       </section>
-      </div>
-      <div id="manager-map"></div>
+   </div>
+
+  <div id="manager-map"></div>
+
+  <style>
+     .constructions-table .tbody .td-busy .busy-calendar {
+        position: absolute;
+        bottom: 80%;
+        display: none;
+        width: 297px;
+        padding: 20px 25px 24px 25px;
+        border-radius: 3px;
+        background: white;
+        box-shadow: 0 4px 20px 1px rgba(177, 177, 177, .5);
+        cursor: auto;
+     }
+     .constructions-table .wrapp-busy,
+     .constructions-table .mob-view .busy-line {
+        display: flex;
+        flex-direction: row;
+     }
+     .constructions-table .wrapp-busy .block,
+     .constructions-table .mob-view .busy-line .block {
+        width: 100%;
+        height: 4px;
+     }
+     .constructions-table .wrapp-busy .busy,
+     .constructions-table .mob-view .busy-line .wrapp-busy .busy {
+        background: #e84a56;
+     }
+     .constructions-table .wrapp-busy .free,
+     .constructions-table .mob-view .busy-line .wrapp-busy .free {
+        background: #5cbc59;
+     }
+     .constructions-table .wrapp-busy .pre-order,
+     .constructions-table .mob-view .busy-line .wrapp-busy .pre-order
+     {
+        background-color: #e6ecf2;
+     }
+     .constructions-table .wrapp-busy .reserve,
+     .constructions-table .mob-view .busy-line .wrapp-busy .reserve
+     {
+        background-color: #FED648;
+     }
+
+     .constructions-table .td-busy{
+        position: relative;
+        overflow: unset;
+        text-overflow: unset;
+     }
+     .constructions-table .td-busy .busy-calendar {
+        position: absolute;
+        bottom: 80%;
+        display: none;
+        width: 297px;
+        padding: 20px 25px 24px 25px;
+        border-radius: 3px;
+        background: white;
+        box-shadow: 0 4px 20px 1px rgba(177, 177, 177, .5);
+        cursor: auto;
+     }
+     .constructions-table .td-busy .busy-calendar:before {
+        position: absolute;
+        bottom: -13px;
+        left: 19px;
+        border: 13px solid transparent;
+        border-left: 10px solid white;
+        content: '';
+     }
+     .constructions-table .td-busy .busy-calendar .title-calendar
+     {
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: bold;
+     }
+     .constructions-table .td-busy:hover .busy-calendar {
+        z-index: 2;
+        display: block;
+        height: max-content;
+     }
+     .constructions-table .wrapp-busy-table{
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+     }
+     .constructions-table .wrapp-busy-table .month{
+        position: relative;
+        cursor: pointer;
+        width: 16.6%;
+        box-sizing: border-box;
+        border: 1px solid transparent;
+        font-size: 14px;
+     }
+     .constructions-table .wrapp-busy-table .month a{
+        display: block;
+        padding: 6px 0;
+        text-align: center;
+        outline: none;
+     }
+     .constructions-table .wrapp-busy-table .month{
+        outline: none;
+     }
+     .constructions-table .wrapp-busy-table .month:nth-child(1){
+        border-top-left-radius: 3px;
+     }
+     .constructions-table  .wrapp-busy-table .month.busy{
+        border-color: #e84a56;
+        background: #e84a56;
+        color: white;
+     }
+     .constructions-table .wrapp-busy-table .month.free{
+        border-color: #55bc4f;
+        background: #55bc4f;
+        color: white;
+     }
+     .constructions-table .wrapp-busy-table .month.reserve{
+        background-color: #FED648;
+        color: black;
+     }
+     .constructions-table .wrapp-busy-table .month.pre-order{
+        background-color: #e6ecf2;
+        color: black;
+     }
+     .constructions-table .td-busy .busy-calendar .month.reserve{
+        background-color: #FED648;
+     }
+     .constructions-table .wrapp-busy-table .month.select:before {
+        position: absolute;
+        left: calc(50% - 7.5px);
+        top: calc(50% - 7.5px);
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background-image: url(/assets/img/icons/check_mark.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 11px;
+        z-index: 1;
+        content: '';
+        transition: all 0.4s;
+     }
+     .constructions-table .wrapp-busy-table .month.select:after{
+        position: absolute;
+        left: calc(50% - 7.5px);
+        top: calc(50% - 7.5px);
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: white;
+        content: '';
+        transition: all 0.4s;
+     }
+  </style>
   
-  
-  <section id="result-search-list">
-      <div class="planes-list container container-base container-search-result show-list">
-        <h1 class="title">@lang('message.actual_planes')</h1><br />
-        <p>@lang('message.actual_employment') на {{ date('d.m.Y') }}</p><br />
-        @if(!isset($_GET['om']) || $_GET['om'] != 'true')
-        <p>@lang('message.select_and_send')</p>
-        @endif
-        <br />
-        <div class="result-list manager-map">
-            <div class="table-result">
-                <div class="thead">
-                    <div class="tr">
-                        @if(!isset($_GET['om']) || $_GET['om'] != 'true')
-                        <div class="td td-checkbox"><input id="selectAll" type="checkbox"></div>
-                        @endif
-                        <div class="td td-code">
-                            @lang('message.code')
-                        </div>
-                        <div class="td td-type">
-                            @lang('message.type_')
-                        </div>
-                        <div class="td td-adress">
-                            @lang('message.address_')
-                        </div>
-                        <div class="td td-side">
-                            сторона
-                        </div>
-                        <div class="td td-light">
-                            @lang('message.light_')
-                        </div>
-                        <div class="td td-photo">
-                            @lang('message.photo')
-                        </div>
-                        <div class="td td-busy">
-                            @lang('message.employment_')
-                        </div>
-                        <div class="td td-price">
-                            @lang('message.price_')
-                        </div>
-                    </div>
-                </div>
-                <div class="tbody">
+  <div class="container container-base">
+      <section class="proposal-constructions-section">
+         <h2 class="proposal-title">Запропоновані рекламні конструкції:<sup>({{$boards->count()}})</sup></h2>
+         {{--
+         <p class="proposal-constructions-section--text">Період розміщення: з <span>01.06.2025</span> - по
+            <span>31.08.2025</span>
+         </p>
+         --}}
+         <p class="proposal-constructions-section--text">@lang('message.actual_employment') на <span class="date"> {{ date('d.m.Y') }}</span>.
+         </p>
+
+         <div class="table-tools">
+            <div class="table-tools__export">
+               <a class="table-tools__export-btn btn--xls" href="#">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
+                     <path d="M12 16V4M12 16l-5-5m5 5l5-5M5 20h14" stroke="#f15a29" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  Завантажити в .xls </a>
+               {{--
+               <a class="table-tools__export-btn btn--pdf" href="#">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                     <path
+                        d="M17.292 5.99121V16.667C17.2919 17.2747 17.0498 17.8574 16.6201 18.2871C16.1904 18.7168 15.6077 18.958 15 18.958H5C4.39229 18.958 3.80964 18.7168 3.37988 18.2871C2.95019 17.8574 2.70809 17.2747 2.70801 16.667V3.33301C2.70809 2.72534 2.95019 2.14258 3.37988 1.71289C3.80964 1.28322 4.39229 1.04199 5 1.04199H12.3418L17.292 5.99121ZM5 2.29199C4.72381 2.29199 4.45901 2.40143 4.26367 2.59668C4.0684 2.79195 3.95809 3.05686 3.95801 3.33301V16.667C3.95809 16.9431 4.0684 17.208 4.26367 17.4033C4.45901 17.5986 4.72381 17.708 5 17.708H15C15.2762 17.708 15.541 17.5986 15.7363 17.4033C15.9316 17.208 16.0419 16.9431 16.042 16.667V7.29199H11.042V2.29199H5ZM13.333 14.792H6.66699V13.542H13.333V14.792ZM13.333 11.458H6.66699V10.208H13.333V11.458ZM8.33301 8.125H6.66699V6.875H8.33301V8.125ZM12.292 6.04199H15.5752L12.292 2.75879V6.04199Z"
+                        fill="#FC6B40" />
+                  </svg>
+                  Завантажити в .pdf</a>
+               <a class="table-tools__export-btn btn--ppt" href="#">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <path
+                        d="M16.5381 1.67773C17.5464 1.78031 18.334 2.63157 18.334 3.66699V11.334L18.3232 11.5381C18.2276 12.4792 17.4792 13.2276 16.5381 13.3232L16.334 13.334H10.75V15.917H14.166V17.417H5.83301V15.917H9.25V13.334H3.66699L3.46289 13.3232C2.52155 13.2278 1.77348 12.4793 1.67773 11.5381L1.66699 11.334V3.66699C1.66699 2.63134 2.45422 1.78 3.46289 1.67773L3.66699 1.66699H16.334L16.5381 1.67773ZM3.66699 3.16699C3.39085 3.16699 3.16699 3.39085 3.16699 3.66699V11.334C3.16734 11.6098 3.39107 11.834 3.66699 11.834H16.334C16.6096 11.8336 16.8336 11.6096 16.834 11.334V3.66699C16.834 3.39107 16.6098 3.16734 16.334 3.16699H3.66699Z"
+                        fill="#FC6B40" />
+                     <path d="M9.75 7.93262V7.06738L10.5 7.5L9.75 7.93262Z" fill="white" stroke="#FC6B40"
+                        stroke-width="2" />
+                  </svg>
+                  Завантажити в .ppt</a>
+                  --}}
+            </div>
+
+            <div class="table-tools__legend">
+               <div class="legend-item legend--green">
+                  <span class="mark"> </span>
+                  <span> — @lang('message.free_')</span>
+               </div>
+               <div class="legend-item legend--gray">
+                  <span class="mark"> </span>
+                  <span> — @lang('message.predzakaz')</span>
+               </div>
+               <div class="legend-item legend--yellow">
+                  <span class="mark"> </span>
+                  <span> — @lang('message.reserve')</span>
+               </div>
+               <div class="legend-item legend--red">
+                  <span class="mark"> </span>
+                  <span> — @lang('message.busy')</span>
+               </div>
+            </div>
+         </div>
+
+         <table class="constructions-table desktop">
+            <thead>
+               <tr>
+                  <th class="sortable">
+                     <div class="th-content">
+                        <span>@lang('message.code')</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </th>
+
+                  <th class="sortable">
+                     <div class="th-content">
+                        <span>@lang('message.type_')</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </th>
+
+                  <th>
+                     <div class="th-content">
+                        <span>@lang('message.address_')</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </th>
+
+                  <th>
+                     <div class="th-content">
+                        <span>Сторона</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </th>
+
+                  <th>
+                     <div class="th-content">
+                        <span>@lang('message.light_')</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </th>
+
+                  <th>
+                     <div class="th-content">
+                        <span>@lang('message.photo')</span>
+                     </div>
+                  </th>
+
+                  <th>Мапа</th>
+
+                  <th class="sortable">
+                     <div class="th-content">
+                        <span>@lang('message.employment_')</span>
+                     </div>
+                  </th>
+
+                  <th class="sortable">
+                     <div class="th-content">
+                        <span>@lang('message.price_')</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </th>
+
+                  <th></th>
+               </tr>
+            </thead>
+            
+            <tbody class="tbody">
             @foreach($boards as $k => $board)
-                {{--@if(get_class($board) != 'Illuminate\Database\Eloquent\Collection')--}}
-                @if(!isset($board['position']))
-                    <div class="tr">
-                        @if(!isset($_GET['om']) || $_GET['om'] != 'true')
-                        <div class="td td-checkbox">
-                            <input type="checkbox" name="id[]" value="{{$board->id}}"/>
+               <tr>
+                  <td>
+                     <div class="td-code" data-code="{{$board->id}}" data-select-month="">
+                     @if($_GET['om'] == 'true')
+                        {{$board->code}}
+                     @else
+                        <a href="/{{$board->aleas}}" target="_blank">{{$board->id}}</a>
+                     @endif
+                     </div>
+                  </td>
+                  <td>
+                     @if($_GET['om'] == 'true')
+                        {{$board->board_type}}
+                     @else
+                        <a href="/{{$board->aleas}}" target="_blank">{{$board->board_type}}</a>
+                     @endif
+                  </td>
+                  <td>
+                     @if($_GET['om'] == 'true')
+                        @if ($board->city_name)
+                           @if (Auth::guest() || Auth::user() && Auth::user()->role_id != 1)
+                              {{ $board->city_name }}
+                           @endif
+                        @endif
+                        @if ($board->format)
+                           @if ($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
+                              {{", "}}
+                           @endif
+                        @endif
+                        @if ($board->addr)
+                           @if($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1) || $board->format && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
+                              {{", "}}
+                           @endif
+                           {{ $board->addr }}
+                        @endif
+                        @if (!$board->city_name && !$board->format && !$board->addr)
+                           {{ '-' }}
+                        @endif
+                     @else
+                        <a href="/{{$board->aleas}}" target="_blank">
+                           @if ($board->city_name)
+                              @if (Auth::guest() || Auth::user() && Auth::user()->role_id != 1)
+                                 {{ $board->city_name }}
+                              @endif
+                           @endif
+                           @if ($board->format)
+                              @if ($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
+                                 {{", "}}
+                              @endif
+                           @endif
+                           @if ($board->addr)
+                              @if($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1) || $board->format && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
+                                 {{", "}}
+                              @endif
+                              {{ $board->addr }}
+                           @endif
+                           @if (!$board->city_name && !$board->format && !$board->addr)
+                              {{ '-' }}
+                           @endif
+                        </a>
+                     @endif
+                  </td>
+                  <td>
+                     @if($_GET['om'] == 'true')
+                        {{$board->side_type}}
+                     @else
+                        <a href="/{{$board->aleas}}" target="_blank">{{$board->side_type}}</a>
+                     @endif
+                  </td>
+                  <td>
+                     <!-- добавить разницу в светимости -->
+                     <svg class="lighting" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                        viewBox="0 0 18 18" fill="none">
+                        <path d="M6.75 13.5H11.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" @if($board->light == App\Helpers\BoardConstants::LIGHT_ON) stroke="#FC6B40" @endif/>
+                        <path d="M7.5 16.5H10.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"  @if($board->light == App\Helpers\BoardConstants::LIGHT_ON) stroke="#FC6B40" @endif/>
+                        <path
+                           d="M11.3175 10.5C11.4525 9.765 11.805 9.195 12.375 8.625C12.7371 8.29163 13.0246 7.88537 13.2185 7.43294C13.4124 6.98051 13.5083 6.49216 13.5 6C13.5 4.80653 13.0259 3.66193 12.182 2.81802C11.3381 1.97411 10.1935 1.5 9 1.5C7.80653 1.5 6.66193 1.97411 5.81802 2.81802C4.97411 3.66193 4.5 4.80653 4.5 6C4.5 6.75 4.6725 7.6725 5.625 8.625C6.16804 9.12155 6.5385 9.77839 6.6825 10.5"
+                           stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"  @if($board->light == App\Helpers\BoardConstants::LIGHT_ON) stroke="#FC6B40" @endif/>
+                     </svg>
+                  </td>
+                  <td>
+                     <div class="construction-photo-wrapper">
+                        @if ($board->image != null || $board->scheme != null)
+                        <img class="construction-photo construction-photo-desktop"
+                           src="{{ $board->image ? "/upload/" . $board->image : ($board->scheme ? "/upload/" . $board->scheme : "") }}"
+                           alt="Фото конструкції">
+
+                        <div class="zoom-icon-wrapper">
+                           <svg class="zoom-icon img" xmlns="http://www.w3.org/2000/svg" width="8" height="8"
+                                data-alias="ua/{{ $board->aleas }}"
+                                data-id="{{ $board->id }}"
+                                data-img="{{ $board->image ? "/upload/" . $board->image . "|" : "" }}{{ $board->scheme ? "/upload/" . $board->scheme : "" }}"
+                                viewBox="0 0 8 8" fill="none">
+                              <path
+                                 d="M3.65918 0.250122C5.54196 0.250135 7.06836 1.77652 7.06836 3.6593C7.06833 4.51315 6.75311 5.29265 6.23438 5.89075L7.70312 7.54211L7.23633 7.95813L5.7832 6.32434C5.20048 6.78937 4.46267 7.06848 3.65918 7.06848C1.77642 7.06848 0.250061 5.54204 0.25 3.6593C0.25 1.77651 1.77639 0.250122 3.65918 0.250122ZM3.65918 0.875122C2.12156 0.875122 0.875 2.12169 0.875 3.6593C0.875061 5.19687 2.1216 6.44348 3.65918 6.44348C5.19675 6.44347 6.4433 5.19686 6.44336 3.6593C6.44336 2.12169 5.19678 0.875135 3.65918 0.875122Z"
+                                 fill="currentColor" />
+                           </svg>
                         </div>
                         @endif
-                        <div class="td td-code" data-code="{{$board->id}}" data-select-month="">
-                            <span class="mb-title">@lang('message.code')</span>
-                            @if($_GET['om'] == 'true')
-                            {{$board->code}}
-                            @else
-                            <a href="/{{$board->aleas}}" target="_blank">{{$board->id}}</a>
-                            @endif
-                        </div>
-                        <div class="td td-type">
-                            <span class="mb-title">@lang('message.type_')</span>
-                            @if($_GET['om'] == 'true')
-                            {{$board->board_type}}
-                            @else
-                            <a href="/{{$board->aleas}}" target="_blank">{{$board->board_type}}</a>
-                            @endif
-                        </div>
-                        <div class="td td-adress">
-                            <span class="mb-title">@lang('message.address_')</span>
-                            @if($_GET['om'] == 'true')
-                              @if ($board->city_name)
-                                @if (Auth::guest() || Auth::user() && Auth::user()->role_id != 1)
-                                  {{ $board->city_name }}
-                                @endif
-                              @endif
-                              @if ($board->format)
-                                @if ($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
-                                  {{", "}}
-                                @endif                                
-                              @endif
-                              @if ($board->addr)
-                                @if($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1) || $board->format && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
-                                  {{", "}}
-                                @endif
-                                {{ $board->addr }}
-                              @endif
-                              @if (!$board->city_name && !$board->format && !$board->addr)
-                              {{ '-' }}
-                              @endif
-                            @else
-                            <a href="/{{$board->aleas}}" target="_blank">
-                              @if ($board->city_name)
-                                @if (Auth::guest() || Auth::user() && Auth::user()->role_id != 1)
-                                  {{ $board->city_name }}
-                                @endif
-                              @endif
-                              @if ($board->format)
-                                @if ($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
-                                  {{", "}}
-                                @endif                                
-                              @endif
-                              @if ($board->addr)
-                                @if($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1) || $board->format && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
-                                  {{", "}}
-                                @endif
-                                {{ $board->addr }}
-                              @endif
-                              @if (!$board->city_name && !$board->format && !$board->addr)
-                              {{ '-' }}
-                              @endif
-                            </a>
-                            @endif
-                        </div>
-                        <div class="td td-side text-center">
-                            <span class="mb-title">сторона</span>
-                            @if($_GET['om'] == 'true')
-                            {{$board->side_type}}
-                            @else
-                            <a href="/{{$board->aleas}}" target="_blank">{{$board->side_type}}</a>
-                            @endif
-                        </div>
-                        <div class="td td-light text-center">
-                            <span class="mb-title">@lang('message.light_')</span>
-                            <div class="image-wrapper">
-                                <a href="/{{$board->aleas}}" target="_blank">
-                                    <img class="img" loading="lazy" src="/img/icon_light_{{ $board->light == App\Helpers\BoardConstants::LIGHT_ON ? 'on' : 'off' }}.svg" alt="light {{ $board->light == App\Helpers\BoardConstants::LIGHT_ON ? 'on' : 'off'}}">
-                                </a>
-                                <p class="light-info">
-                                    Подсветка - <span>отсутствует</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="td td-photo text-center" @if ($board->image == null && $board->scheme == null) style="cursor: default" @endif>
-                            <span class="mb-title">@lang('message.photo')</span>
-                            @if ($board->image != null || $board->scheme != null)
-                              @if(App::isLocale('ua'))
-                              <img alt="board image" class="img" src="/img/icon_photo_on.svg" data-alias="ua/{{ $board->aleas }}" data-id="{{ $board->bord_id }}" data-img="
-                              @else
-                              <img alt="board image" class="img" src="/img/icon_photo_on.svg" data-alias="{{ $board->aleas }}" data-id="{{ $board->bord_id }}" data-img="
-                              @endif
-                              
-                              @if ($board->image != null)
-                                {{ "/upload/" . $board->image }}|
-                              @endif
-                              @if ($board->scheme != null)
-                                {{ "/upload/" . $board->scheme }}
-                              @endif
-                              ">
-                            @else
-                              <img alt="none image" class="img" src="/img/icon_photo_off.svg" alt="board">
-                            @endif
-                        </div>
-                        <div class="td td-busy" data-basket="{{ $board->basket }}" data-busy="{{ $board->reserve }}">
-                            <span class="mb-title">@lang('message.employment_')</span>
-                        </div>
-                        <div class="td td-price text-right ">
-                            <span class="mb-title">@lang('message.price_')</span>
-                            @if (Auth::user() &&  Auth::user()->role_id < 3)
-                                <a href="#" class="cost-board">{{ $board->approximated_selling_price }} ₴</a>
-                            @elseif($_GET['om'] == 'true')
-                                <a href="#" class="cost-board">{{ $board->approximated_selling_price }} ₴</a>
-                            @elseif (setting('front.hidden_price') || !$board->price)
-                                <a href="#" class="cost-board">@lang('message.hidden_price_word')</a>
-                            @else
-                                <a href="#" class="cost-board">{{ $board->approximated_selling_price }} ₴</a>
-                            @endif
-                        </div>
-                    </div>
-                @else
-                    <div class="basket-search-address" data-lat="{{ $board['lat'] }}" data-lng="{{ $board['lng'] }}" data-radius="{{ $board['radius'] }}">{{ $k }}</div>
-                    @php
-                    $point_boards = $board['position'];
-                    @endphp
-                    @foreach($point_boards as $k1 => $board)
-                    <div class="tr">
-                        @if(!isset($_GET['om']) || $_GET['om'] != 'true')
-                        <div class="td td-checkbox">
-                            <input type="checkbox" name="id[]" value="{{$board->id}}"/>
-                        </div>
+                     </div>
+                  </td>
+                  <td>
+                     @if($board->x && $board->y)
+                     <button class="show-on-map">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                           <g clip-path="url(#clip0_1_1882)">
+                              <path fill-rule="evenodd" clip-rule="evenodd"
+                                 d="M5.72092 1.01161C5.88421 0.918303 6.08334 0.912776 6.25156 0.996885L11.9823 3.86226L16.9709 1.01161C17.145 0.91213 17.3589 0.912845 17.5323 1.01349C17.7058 1.11413 17.8125 1.29949 17.8125 1.5V13.5C17.8125 13.7019 17.7043 13.8882 17.5291 13.9884L12.2791 16.9884C12.1158 17.0817 11.9167 17.0872 11.7484 17.0031L6.0177 14.1377L1.02908 16.9884C0.854983 17.0879 0.641093 17.0872 0.467666 16.9865C0.294239 16.8859 0.1875 16.7005 0.1875 16.5V4.5C0.1875 4.29814 0.295661 4.11176 0.470922 4.01161L5.72092 1.01161ZM6.0177 2.13775L1.3125 4.82643V15.5307L5.72092 13.0116C5.88421 12.9183 6.08334 12.9128 6.25156 12.9969L11.9823 15.8623L16.6875 13.1736V2.46929L12.2791 4.98839C12.1158 5.0817 11.9167 5.08722 11.7484 5.00312L6.0177 2.13775Z"
+                                 fill="#FC6B40" />
+                              <path fill-rule="evenodd" clip-rule="evenodd"
+                                 d="M6 0.9375C6.31066 0.9375 6.5625 1.18934 6.5625 1.5V13.5C6.5625 13.8107 6.31066 14.0625 6 14.0625C5.68934 14.0625 5.4375 13.8107 5.4375 13.5V1.5C5.4375 1.18934 5.68934 0.9375 6 0.9375Z"
+                                 fill="#FC6B40" />
+                              <path fill-rule="evenodd" clip-rule="evenodd"
+                                 d="M12 3.9375C12.3107 3.9375 12.5625 4.18934 12.5625 4.5V16.5C12.5625 16.8107 12.3107 17.0625 12 17.0625C11.6893 17.0625 11.4375 16.8107 11.4375 16.5V4.5C11.4375 4.18934 11.6893 3.9375 12 3.9375Z"
+                                 fill="#FC6B40" />
+                           </g>
+                           <defs>
+                              <clipPath id="clip0_1_1882">
+                                 <rect width="18" height="18" fill="white" />
+                              </clipPath>
+                           </defs>
+                        </svg>
+                     </button>
+                     @endif
+                  </td>
+                  <td class="td-busy" data-basket="{{ $board->basket }}" data-busy="{{ $board->reserve }}">
+
+                  </td>
+                  <td>
+                     <div class="price">
+                        @if (Auth::user() &&  Auth::user()->role_id < 3)
+                           <a href="#" class="cost-board">{{ $board->approximated_selling_price }} ₴</a>
+                        @elseif($_GET['om'] == 'true')
+                           <a href="#" class="cost-board">{{ $board->approximated_selling_price }} ₴</a>
+                        @elseif (setting('front.hidden_price') || !$board->approximated_selling_price)
+                           <a href="#" class="cost-board">@lang('message.hidden_price_word')</a>
+                        @else
+                           <a href="#" class="cost-board">{{ $board->approximated_selling_price }} ₴</a>
                         @endif
-                        <div class="td td-code" data-code="{{$board->id}}" data-select-month="">
-                            <span class="mb-title">@lang('message.code')</span>
-                            @if($_GET['om'] == 'true')
-                            {{$board->code}}
-                            @else
-                            <a href="/{{$board->aleas}}" target="_blank">{{$board->id}}</a>
-                            @endif
+                     </div>
+                  </td>
+                  <td>
+                     <label class="select-construction-label">
+                        <input type="checkbox"
+                               class="select-construction-checkbox"
+                               name="id[]"
+                               value="{{$board->id}}"
+                               hidden>
+                        <div class="select-button">
+                           <span class="to-choose">Обрати</span>
+                           <span class="choosen">Обрано</span>
                         </div>
-                        <div class="td td-type">
-                            <span class="mb-title">@lang('message.type_')</span>
-                            @if($_GET['om'] == 'true')
-                            {{$board->board_type}}
-                            @else
-                            <a href="/{{$board->aleas}}" target="_blank">{{$board->board_type}}</a>
-                            @endif
-                        </div>
-                        <div class="td td-adress">
-                            <span class="mb-title">@lang('message.address_')</span>
-                            @if($_GET['om'] == 'true')
-                              @if ($board->city_name)
-                                @if (Auth::guest() || Auth::user() && Auth::user()->role_id != 1)
-                                  {{ $board->city_name }}
-                                @endif
-                              @endif
-                              @if ($board->format)
-                                @if ($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
-                                  {{", "}}
-                                @endif                                
-                              @endif
-                              @if ($board->addr)
-                                @if($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1) || $board->format && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
-                                  {{", "}}
-                                @endif
-                                {{ $board->addr }}
-                              @endif
-                              @if (!$board->city_name && !$board->format && !$board->addr)
-                              {{ '-' }}
-                              @endif
-                            @else
-                            <a href="/{{$board->aleas}}" target="_blank">
-                              @if ($board->city_name)
-                                @if (Auth::guest() || Auth::user() && Auth::user()->role_id != 1)
-                                  {{ $board->city_name }}
-                                @endif
-                              @endif
-                              @if ($board->format)
-                                @if ($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
-                                  {{", "}}
-                                @endif                                
-                              @endif
-                              @if ($board->addr)
-                                @if($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1) || $board->format && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
-                                  {{", "}}
-                                @endif
-                                {{ $board->addr }}
-                              @endif
-                              @if (!$board->city_name && !$board->format && !$board->addr)
-                              {{ '-' }}
-                              @endif
-                            </a>
-                            @endif
-                        </div>
-                        <div class="td td-side text-center">
-                            <span class="mb-title">сторона</span>
-                            @if($_GET['om'] == 'true')
-                            {{$board->side_type}}
-                            @else
-                            <a href="/{{$board->aleas}}" target="_blank">{{$board->side_type}}</a>
-                            @endif
-                        </div>
-                        <div class="td td-light text-center">
-                            <span class="mb-title">@lang('message.light_')</span>
-                            <div class="image-wrapper">
-                                <a href="/{{$board->aleas}}" target="_blank">
-                                    <img class="img" loading="lazy" src="/img/icon_light_{{($board->light == App\Helpers\BoardConstants::LIGHT_ON)? 'on' : 'off'}}.svg" alt="light {{($board->light == App\Helpers\BoardConstants::LIGHT_ON)? 'on' : 'off'}}">
-                                </a>
-                                <p class="light-info">
-                                    Подсветка - <span>отсутствует</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="td td-photo text-center" @if ($board->image == null && $board->scheme == null) style="cursor: default" @endif>
-                            <span class="mb-title">@lang('message.photo')</span>
-                            @if ($board->image != null || $board->scheme != null)
-                              @if(App::isLocale('ua'))
-                              <img alt="board image" class="img" src="/img/icon_photo_on.svg" data-alias="ua/{{ $board->aleas }}" data-id="{{ $board->bord_id }}" data-img="
-                              @else
-                              <img alt="board image" class="img" src="/img/icon_photo_on.svg" data-alias="{{ $board->aleas }}" data-id="{{ $board->bord_id }}" data-img="
-                              @endif
-                              
-                              @if ($board->image != null)
-                                {{ "/upload/" . $board->image }}|
-                              @endif
-                              @if ($board->scheme != null)
-                                {{ "/upload/" . $board->scheme }}
-                              @endif
-                              ">
-                            @else
-                              <img alt="none image" class="img" src="/img/icon_photo_off.svg" alt="board">
-                            @endif
-                        </div>
-                        <div class="td td-busy" data-basket="{{ $board->basket }}" data-busy="{{ $board->reserve }}">
-                            <span class="mb-title">@lang('message.employment_')</span>
-                        </div>
-                        <div class="td td-price text-right ">
-                            <span class="mb-title">@lang('message.price_')</span>
-                            @if (Auth::user() &&  Auth::user()->role_id < 3)
-                                <a href="#" class="cost-board">{{ $board->price }} ₴</a>
-                            @elseif($_GET['om'] == 'true')
-                                <a href="#" class="cost-board">{{ $board->price }} ₴</a>
-                            @elseif (setting('front.hidden_price') || !$board->price)
-                                <a href="#" class="cost-board">@lang('message.hidden_price_word')</a>
-                            @else
-                                <a href="#" class="cost-board">{{ $board->price }} ₴</a>
-                            @endif
-                        </div>
-                    </div>
-                    @endforeach
-                @endif
+                     </label>
+                  </td>
+               </tr>
             @endforeach
-                </div>
+               <!-- repeated table rows... -->
+            </tbody>
+         </table>
+
+
+
+         @foreach($boards as $k => $board)
+         <!-- Mobile table -->
+         <table class="constructions-table-mobile">
+            <tbody>
+               <tr>
+                  <td class="mobile-table-head">
+                     <div>
+                        <span>код</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </td>
+                  <td class="mobile-table-info">
+                     <div class="td-code" data-code="{{$board->id}}" data-select-month="">
+                        @if($_GET['om'] == 'true')
+                           {{$board->code}}
+                        @else
+                           <a href="/{{$board->aleas}}" target="_blank">{{$board->id}}</a>
+                        @endif
+                     </div>
+                  </td>
+               </tr>
+
+               <tr>
+                  <td class="mobile-table-head">
+                     <div>
+                        <span>тип</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </td>
+                  <td class="mobile-table-info">
+                     @if($_GET['om'] == 'true')
+                        {{$board->board_type}}
+                     @else
+                        <a href="/{{$board->aleas}}" target="_blank">{{$board->board_type}}</a>
+                     @endif
+                  </td>
+               </tr>
+
+               <tr>
+                  <td class="mobile-table-head">
+                     <div>
+                        <span>адреса</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </td>
+                  <td class="mobile-table-info">
+                     @if($_GET['om'] == 'true')
+                        @if ($board->city_name)
+                           @if (Auth::guest() || Auth::user() && Auth::user()->role_id != 1)
+                              {{ $board->city_name }}
+                           @endif
+                        @endif
+                        @if ($board->format)
+                           @if ($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
+                              {{", "}}
+                           @endif
+                        @endif
+                        @if ($board->addr)
+                           @if($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1) || $board->format && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
+                              {{", "}}
+                           @endif
+                           {{ $board->addr }}
+                        @endif
+                        @if (!$board->city_name && !$board->format && !$board->addr)
+                           {{ '-' }}
+                        @endif
+                     @else
+                        <a href="/{{$board->aleas}}" target="_blank">
+                           @if ($board->city_name)
+                              @if (Auth::guest() || Auth::user() && Auth::user()->role_id != 1)
+                                 {{ $board->city_name }}
+                              @endif
+                           @endif
+                           @if ($board->format)
+                              @if ($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
+                                 {{", "}}
+                              @endif
+                           @endif
+                           @if ($board->addr)
+                              @if($board->city_name && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1) || $board->format && (Auth::guest() || Auth::user() && Auth::user()->role_id != 1))
+                                 {{", "}}
+                              @endif
+                              {{ $board->addr }}
+                           @endif
+                           @if (!$board->city_name && !$board->format && !$board->addr)
+                              {{ '-' }}
+                           @endif
+                        </a>
+                     @endif
+                  </td>
+               </tr>
+
+               <tr>
+                  <td class="mobile-table-head">
+                     <div>
+                        <span>сторона</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </td>
+                  <td class="mobile-table-info">
+                     @if($_GET['om'] == 'true')
+                        {{$board->side_type}}
+                     @else
+                        <a href="/{{$board->aleas}}" target="_blank">{{$board->side_type}}</a>
+                     @endif
+                  </td>
+               </tr>
+
+               <tr>
+                  <td class="mobile-table-head">
+                     <div>
+                        <span>підсвітка</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </td>
+                  <td class="mobile-table-info">
+                     <svg class="lighting" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                          viewBox="0 0 18 18" fill="none">
+                        <path d="M6.75 13.5H11.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" @if($board->light == App\Helpers\BoardConstants::LIGHT_ON) stroke="#FC6B40" @endif/>
+                        <path d="M7.5 16.5H10.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"  @if($board->light == App\Helpers\BoardConstants::LIGHT_ON) stroke="#FC6B40" @endif/>
+                        <path
+                                d="M11.3175 10.5C11.4525 9.765 11.805 9.195 12.375 8.625C12.7371 8.29163 13.0246 7.88537 13.2185 7.43294C13.4124 6.98051 13.5083 6.49216 13.5 6C13.5 4.80653 13.0259 3.66193 12.182 2.81802C11.3381 1.97411 10.1935 1.5 9 1.5C7.80653 1.5 6.66193 1.97411 5.81802 2.81802C4.97411 3.66193 4.5 4.80653 4.5 6C4.5 6.75 4.6725 7.6725 5.625 8.625C6.16804 9.12155 6.5385 9.77839 6.6825 10.5"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"  @if($board->light == App\Helpers\BoardConstants::LIGHT_ON) stroke="#FC6B40" @endif/>
+                     </svg>
+                  </td>
+               </tr>
+
+               <tr>
+                  <td class="mobile-table-head">
+                     <div>
+                        <span>фото</span>
+                        {{--
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                           <path d="M8 4.5H4L5.90476 2.5L8 4.5Z" fill="#3D445C" />
+                           <path d="M8 7.5H4L5.90476 9.5L8 7.5Z" fill="#3D445C" />
+                        </svg>
+                        --}}
+                     </div>
+                  </td>
+                  <td class="mobile-table-info">
+                     <div class="construction-photo-wrapper-mobile">
+                        @if ($board->image != null || $board->scheme != null)
+                           <img class="construction-photo construction-photo-desktop"
+                                src="{{ $board->image ? "/upload/" . $board->image : ($board->scheme ? "/upload/" . $board->scheme : "") }}"
+                                alt="Фото конструкції">
+
+                           <div class="zoom-icon-wrapper">
+                              <svg class="zoom-icon img" xmlns="http://www.w3.org/2000/svg" width="8" height="8"
+                                   data-alias="ua/{{ $board->aleas }}"
+                                   data-id="{{ $board->id }}"
+                                   data-img="{{ $board->image ? "/upload/" . $board->image . "|" : "" }}{{ $board->scheme ? "/upload/" . $board->scheme : "" }}"
+                                   viewBox="0 0 8 8" fill="none">
+                                 <path
+                                         d="M3.65918 0.250122C5.54196 0.250135 7.06836 1.77652 7.06836 3.6593C7.06833 4.51315 6.75311 5.29265 6.23438 5.89075L7.70312 7.54211L7.23633 7.95813L5.7832 6.32434C5.20048 6.78937 4.46267 7.06848 3.65918 7.06848C1.77642 7.06848 0.250061 5.54204 0.25 3.6593C0.25 1.77651 1.77639 0.250122 3.65918 0.250122ZM3.65918 0.875122C2.12156 0.875122 0.875 2.12169 0.875 3.6593C0.875061 5.19687 2.1216 6.44348 3.65918 6.44348C5.19675 6.44347 6.4433 5.19686 6.44336 3.6593C6.44336 2.12169 5.19678 0.875135 3.65918 0.875122Z"
+                                         fill="currentColor" />
+                              </svg>
+                           </div>
+                        @endif
+                     </div>
+                  </td>
+               </tr>
+
+               <tr>
+                  <td class="mobile-table-head">
+                     <div>
+                        <span>мапа</span>
+                     </div>
+                  </td>
+                  <td class="mobile-table-info">
+                     @if($board->x && $board->y)
+                        <button class="show-on-map">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                              <g clip-path="url(#clip0_1_1882)">
+                                 <path fill-rule="evenodd" clip-rule="evenodd"
+                                       d="M5.72092 1.01161C5.88421 0.918303 6.08334 0.912776 6.25156 0.996885L11.9823 3.86226L16.9709 1.01161C17.145 0.91213 17.3589 0.912845 17.5323 1.01349C17.7058 1.11413 17.8125 1.29949 17.8125 1.5V13.5C17.8125 13.7019 17.7043 13.8882 17.5291 13.9884L12.2791 16.9884C12.1158 17.0817 11.9167 17.0872 11.7484 17.0031L6.0177 14.1377L1.02908 16.9884C0.854983 17.0879 0.641093 17.0872 0.467666 16.9865C0.294239 16.8859 0.1875 16.7005 0.1875 16.5V4.5C0.1875 4.29814 0.295661 4.11176 0.470922 4.01161L5.72092 1.01161ZM6.0177 2.13775L1.3125 4.82643V15.5307L5.72092 13.0116C5.88421 12.9183 6.08334 12.9128 6.25156 12.9969L11.9823 15.8623L16.6875 13.1736V2.46929L12.2791 4.98839C12.1158 5.0817 11.9167 5.08722 11.7484 5.00312L6.0177 2.13775Z"
+                                       fill="#FC6B40" />
+                                 <path fill-rule="evenodd" clip-rule="evenodd"
+                                       d="M6 0.9375C6.31066 0.9375 6.5625 1.18934 6.5625 1.5V13.5C6.5625 13.8107 6.31066 14.0625 6 14.0625C5.68934 14.0625 5.4375 13.8107 5.4375 13.5V1.5C5.4375 1.18934 5.68934 0.9375 6 0.9375Z"
+                                       fill="#FC6B40" />
+                                 <path fill-rule="evenodd" clip-rule="evenodd"
+                                       d="M12 3.9375C12.3107 3.9375 12.5625 4.18934 12.5625 4.5V16.5C12.5625 16.8107 12.3107 17.0625 12 17.0625C11.6893 17.0625 11.4375 16.8107 11.4375 16.5V4.5C11.4375 4.18934 11.6893 3.9375 12 3.9375Z"
+                                       fill="#FC6B40" />
+                              </g>
+                              <defs>
+                                 <clipPath id="clip0_1_1882">
+                                    <rect width="18" height="18" fill="white" />
+                                 </clipPath>
+                              </defs>
+                           </svg>
+                        </button>
+                     @endif
+                  </td>
+               </tr>
+
+               <tr>
+                  <td class="mobile-table-head">
+                     <div>
+                        <span>зайнятість</span>
+                     </div>
+                  </td>
+                  <td class="mobile-table-info td-busy" data-basket="{{ $board->basket }}" data-busy="{{ $board->reserve }}">
+
+                  </td>
+               </tr>
+
+               <tr>
+                  <td class="mobile-table-head">
+                     <div>
+                        <span>вартість оренди, міс</span>
+                     </div>
+                  </td>
+                  <td class="mobile-table-info">
+                     <div class="price">
+                        @if (Auth::user() &&  Auth::user()->role_id < 3)
+                           <a href="#" class="cost-board">{{ $board->approximated_selling_price }} ₴</a>
+                        @elseif($_GET['om'] == 'true')
+                           <a href="#" class="cost-board">{{ $board->approximated_selling_price }} ₴</a>
+                        @elseif (setting('front.hidden_price') || !$board->approximated_selling_price)
+                           <a href="#" class="cost-board">@lang('message.hidden_price_word')</a>
+                        @else
+                           <a href="#" class="cost-board">{{ $board->approximated_selling_price }} ₴</a>
+                        @endif
+                     </div>
+                  </td>
+
+               </tr>
+               <tr>
+                  <td colspan="2" style="text-align: center;">
+                     <label class="select-construction-label">
+                        <input type="checkbox"
+                               class="select-construction-checkbox"
+                               name="id[]"
+                               value="{{$board->id}}"
+                               hidden>
+                        <div class="select-button">
+                           <span class="to-choose">Обрати</span>
+                           <span class="choosen">Обрано</span>
+                        </div>
+                     </label>
+                  </td>
+               </tr>
+
+            </tbody>
+         </table>
+         @endforeach
+         <!-- --------------------- -->
+
+         <div class="table-tools desktop">
+            <div class="table-tools__export">
+               <a class="table-tools__export-btn btn--xls" href="#">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
+                     <path d="M12 16V4M12 16l-5-5m5 5l5-5M5 20h14" stroke="#f15a29" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  Завантажити в .xls </a>
+               {{--
+               <a class="table-tools__export-btn btn--pdf" href="#">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                     <path
+                        d="M17.292 5.99121V16.667C17.2919 17.2747 17.0498 17.8574 16.6201 18.2871C16.1904 18.7168 15.6077 18.958 15 18.958H5C4.39229 18.958 3.80964 18.7168 3.37988 18.2871C2.95019 17.8574 2.70809 17.2747 2.70801 16.667V3.33301C2.70809 2.72534 2.95019 2.14258 3.37988 1.71289C3.80964 1.28322 4.39229 1.04199 5 1.04199H12.3418L17.292 5.99121ZM5 2.29199C4.72381 2.29199 4.45901 2.40143 4.26367 2.59668C4.0684 2.79195 3.95809 3.05686 3.95801 3.33301V16.667C3.95809 16.9431 4.0684 17.208 4.26367 17.4033C4.45901 17.5986 4.72381 17.708 5 17.708H15C15.2762 17.708 15.541 17.5986 15.7363 17.4033C15.9316 17.208 16.0419 16.9431 16.042 16.667V7.29199H11.042V2.29199H5ZM13.333 14.792H6.66699V13.542H13.333V14.792ZM13.333 11.458H6.66699V10.208H13.333V11.458ZM8.33301 8.125H6.66699V6.875H8.33301V8.125ZM12.292 6.04199H15.5752L12.292 2.75879V6.04199Z"
+                        fill="#FC6B40" />
+                  </svg>
+                  Завантажити в .pdf</a>
+               <a class="table-tools__export-btn btn--ppt" href="#">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <path
+                        d="M16.5381 1.67773C17.5464 1.78031 18.334 2.63157 18.334 3.66699V11.334L18.3232 11.5381C18.2276 12.4792 17.4792 13.2276 16.5381 13.3232L16.334 13.334H10.75V15.917H14.166V17.417H5.83301V15.917H9.25V13.334H3.66699L3.46289 13.3232C2.52155 13.2278 1.77348 12.4793 1.67773 11.5381L1.66699 11.334V3.66699C1.66699 2.63134 2.45422 1.78 3.46289 1.67773L3.66699 1.66699H16.334L16.5381 1.67773ZM3.66699 3.16699C3.39085 3.16699 3.16699 3.39085 3.16699 3.66699V11.334C3.16734 11.6098 3.39107 11.834 3.66699 11.834H16.334C16.6096 11.8336 16.8336 11.6096 16.834 11.334V3.66699C16.834 3.39107 16.6098 3.16734 16.334 3.16699H3.66699Z"
+                        fill="#FC6B40" />
+                     <path d="M9.75 7.93262V7.06738L10.5 7.5L9.75 7.93262Z" fill="white" stroke="#FC6B40"
+                        stroke-width="2" />
+                  </svg>
+                  Завантажити в .ppt</a>
+               --}}
+            </div>
+
+            <div class="table-tools__legend">
+               <div class="legend-item legend--green">
+                  <span class="mark"> </span>
+                  <span> — @lang('message.free_')</span>
+               </div>
+               <div class="legend-item legend--gray">
+                  <span class="mark"> </span>
+                  <span> — @lang('message.predzakaz')</span>
+               </div>
+               <div class="legend-item legend--yellow">
+                  <span class="mark"> </span>
+                  <span> — @lang('message.reserve')</span>
+               </div>
+               <div class="legend-item legend--red">
+                  <span class="mark"> </span>
+                  <span> — @lang('message.busy')</span>
+               </div>
             </div>
          </div>
-         @if(!isset($_GET['om']) || $_GET['om'] != 'true')
-         <div class="send-to-manager">
-            <div class="contact-form">
-                <div class="field-container">
-          			<div class="input-block">
-          				<label>@lang('message.fio')</label>
-          				<input type="text" name="name" value="" required="">
-          			</div>
-          			<div class="input-block">
-          				<label>E-mail</label>
-          				<input type="email" name="email" value="" required="">
-          			</div>
-          			<div class="input-block">
-          				<label>Телефон</label>
-          				<input type="text" name="phone" value="" required="">
-          			</div>
-          		</div>
+
+
+         <div class="pagination-container">
+            <div class="pagination-info">
+               <label for="rowsPerPage">Кількість строк:</label>
+               <select id="rowsPerPage">
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+               </select>
+               <span id="rangeDisplay">1–25 з {{$boards->count()}}</span>
             </div>
-            <button class="btn btn-style" data-key="{{$key}}">@lang('message.send_manager')</button>
+
+            <div class="pagination-controls">
+               <button id="prevPage">&lt;</button>
+               <div id="pages"></div>
+               <button id="nextPage">&gt;</button>
+            </div>
          </div>
-         @endif
+
+         <!-- ____________________________________________ -->
+
+         <label class="comments-label" for="proposal-comments">Коментарі</label>
+         <textarea id="proposal-comments" placeholder="Коментар до замовлення..."></textarea>
+
+
+         <div class="additionals-container">
+            <div class="left-side">
+               <b>Оберіть додаткові послуги:</b>
+
+               <div class="options-wrapper">
+                  <label class="option">
+                     <input type="checkbox" hidden>
+                     <span class="custom-checkbox">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                           <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M5.24995 9.29798L11.3573 3.19067L11.976 3.80939L5.24995 10.5354L2.02393 7.30939L2.64264 6.69067L5.24995 9.29798Z"
+                              fill="#FC6B40" />
+                        </svg>
+                     </span>
+                     Розробка макета (вартість від 1000 грн.)
+                  </label>
+
+                  <label class="option">
+                     <input type="checkbox" hidden>
+                     <span class="custom-checkbox">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                           <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M5.24995 9.29798L11.3573 3.19067L11.976 3.80939L5.24995 10.5354L2.02393 7.30939L2.64264 6.69067L5.24995 9.29798Z"
+                              fill="#FC6B40" />
+                        </svg>
+                     </span>
+                     Друк постеру(ів) (постер 3x6м)
+                  </label>
+               </div>
+            </div>
+
+            <div class="right-side">
+               <div class="sum-wrapper">
+                  <p class="sum-text">обрано <span>12</span> на суму</p>
+                  <p class="sum-number">52 200 ₴</p>
+               </div>
+
+               <label class="show-selected-label">
+                  <input type="checkbox" hidden>
+                  <span class="custom-checkbox"></span>
+                  <span>Показати обрані</span>
+               </label>
+
+               <button class="order-submit-btn" type="submit">Замовити</button>
+            </div>
+
+
+         </div>
+
+         <!-- ____________________________________________ -->
+
+         <p class="important-note">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+               <g clip-path="url(#clip0_1_2104)">
+                  <path
+                     d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                     stroke="#8B8F9D" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M6 8V6" stroke="#8B8F9D" stroke-width="0.75" stroke-linecap="round"
+                     stroke-linejoin="round" />
+                  <path d="M6 4H6.005" stroke="#8B8F9D" stroke-width="0.75" stroke-linecap="round"
+                     stroke-linejoin="round" />
+               </g>
+               <defs>
+                  <clipPath id="clip0_1_2104">
+                     <rect width="12" height="12" fill="white" />
+                  </clipPath>
+               </defs>
+            </svg> Важливо: Ціни вказані без врахування ПДВ та інших податків. Вартість включає лише одну копійку.
+         </p>
+         <p class="info-text">
+            Якщо ви бажаєте внести зміни у перелік запропонованих конструкцій – зв’яжіться з менеджером, який врахує всі
+            ваші зауваження та оновить пропозицію.
+         </p>
+         <p class="info-text">
+            Оберіть конструкції які вас цікавлять, та додаткові послуги, натисніть кнопку “Підтвердити резерв” і наш
+            менеджер самостійно зв’яжеться з вами для оформлення оренди та розміщення Вашої реклами
+         </p>
+      </section>
+   </div>
+
+
+   <!-- Order status modal window -->
+   <div class="order-modal-backdrop">
+      <div class="order-modal">
+         <button class="close-order-modal-btn close-order-modal-btn--cross">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+               <path
+                  d="M19.3313 4.6936L20.1799 5.54224L20.2854 5.64868L20.1799 5.75513L13.4973 12.4368L20.2854 19.2249L20.1799 19.3313L19.3313 20.1799L19.2249 20.2854L12.4368 13.4973L5.75513 20.1799L5.64868 20.2854L5.54224 20.1799L4.6936 19.3313L4.58813 19.2249L4.6936 19.1194L11.3752 12.4368L4.6936 5.75513L4.58813 5.64868L4.6936 5.54224L5.54224 4.6936L5.64868 4.58813L5.75513 4.6936L12.4368 11.3752L19.1194 4.6936L19.2249 4.58813L19.3313 4.6936Z"
+                  fill="#3D445C" stroke="#3D445C" stroke-width="0.3" />
+            </svg>
+         </button>
+
+         <div class="order-modal-content">
+            <div class="icon-wrapper">
+               <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                     d="M15.7501 27.8939L34.072 9.57202L35.9282 11.4282L15.7501 31.6063L6.07202 21.9282L7.92818 20.072L15.7501 27.8939Z"
+                     fill="#FC6B40" />
+               </svg>
+            </div>
+
+            <p class="text-strong">Дякуємо, ваше замовлення прийнято<br> та вже опрацьовується</p>
+            <p class="text-small">Найближчим часом з Вами зв’яжеться наш менеджер</p>
+
+            <button class="close-order-modal-btn close-order-modal-btn--regular">Ок</button>
+         </div>
       </div>
-  </section>
-  @include('add.modals')  
+
+      <div class="order-modal">
+         <button class="close-order-modal-btn  close-order-modal-btn--cross">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+               <path
+                  d="M19.3313 4.6936L20.1799 5.54224L20.2854 5.64868L20.1799 5.75513L13.4973 12.4368L20.2854 19.2249L20.1799 19.3313L19.3313 20.1799L19.2249 20.2854L12.4368 13.4973L5.75513 20.1799L5.64868 20.2854L5.54224 20.1799L4.6936 19.3313L4.58813 19.2249L4.6936 19.1194L11.3752 12.4368L4.6936 5.75513L4.58813 5.64868L4.6936 5.54224L5.54224 4.6936L5.64868 4.58813L5.75513 4.6936L12.4368 11.3752L19.1194 4.6936L19.2249 4.58813L19.3313 4.6936Z"
+                  fill="#3D445C" stroke="#3D445C" stroke-width="0.3" />
+            </svg>
+         </button>
+         <div class="order-modal-content">
+            <div class="icon-wrapper">
+               <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                     d="M11.9282 11.9282L20.9999 21L30.0718 11.9282L31.928 13.7844L22.8561 22.8561L31.928 31.928L30.0718 33.7842L20.9999 24.7124L11.9282 33.7842L10.072 31.928L19.1437 22.8561L10.072 13.7844L11.9282 11.9282Z"
+                     fill="#FC6B40" />
+               </svg>
+
+            </div>
+
+            <p class="text-strong">Сталася помилка при оформленні <br> замовлення</p>
+            <p class="text-small">Спробуйте, будь-ласка, пізніше</p>
+
+            <button class="close-order-modal-btn close-order-modal-btn--regular">Ок</button>
+         </div>
+      </div>
+   </div>
+
+
+   <!--Map modal window desktop -->
+   <div class="map-modal-backdrop">
+      <div class="map-modal">
+         <button class="close-map-modal-btn close-map-modal-btn--cross">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+               <path
+                  d="M19.3313 4.6936L20.1799 5.54224L20.2854 5.64868L20.1799 5.75513L13.4973 12.4368L20.2854 19.2249L20.1799 19.3313L19.3313 20.1799L19.2249 20.2854L12.4368 13.4973L5.75513 20.1799L5.64868 20.2854L5.54224 20.1799L4.6936 19.3313L4.58813 19.2249L4.6936 19.1194L11.3752 12.4368L4.6936 5.75513L4.58813 5.64868L4.6936 5.54224L5.54224 4.6936L5.64868 4.58813L5.75513 4.6936L12.4368 11.3752L19.1194 4.6936L19.2249 4.58813L19.3313 4.6936Z"
+                  fill="#FFF" stroke="#FFF" stroke-width="0.3" />
+            </svg>
+         </button>
+
+
+         <img class="modal-map map-widget" src="https://salon.ru/storage/thumbs/gallery/5/4178/5000_5000_s193.jpg"
+            alt="карта">
+         <img class="modal-map modal-photo" alt="фото билборда"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3e_y-BTn1ejQlCqMApYP2ucgmdWSa5gb3zw&s">
+         <div class="map-modal-content-wrapper">
+            <p class="location-text">Івано-Франківськ , Тараса Шевченка, Березівка. Виїзд з Березівки в Тисменичани, ст.
+               А - до Буковелю 81 км
+            </p>
+
+            <div class="map-modal-price-checkbox-wrapper">
+               <div class="map-modal-price-wrapper">
+                  <span class="text">вартість оренди, міс.</span>
+                  <span class="price">52 200 ₴</span>
+               </div>
+
+               <label class="select-construction-label">
+                  <input type="checkbox" class="select-construction-checkbox" checked name="constructions[]" value="351"
+                     hidden>
+                  <div class="select-button">
+                     <span class="to-choose map-modal-checkbox">Обрати</span>
+                     <span class="choosen map-modal-checkbox">Обрано</span>
+                  </div>
+               </label>
+            </div>
+         </div>
+      </div>
+
+
+   </div>
+
+   <!--Map modal window mobile -->
+   <div class="map-modal-backdrop-mobile">
+      <div class="map-modal-mobile">
+         <div class="map-modal-mobile-container">
+            <div class="header-wrapper">
+               <h3><span>351</span>, <span>Борд</span></h3>
+               <button class="close-map-modal-btn-mobile close-map-modal-btn--cross-mobile">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                     <path
+                        d="M19.3313 4.6936L20.1799 5.54224L20.2854 5.64868L20.1799 5.75513L13.4973 12.4368L20.2854 19.2249L20.1799 19.3313L19.3313 20.1799L19.2249 20.2854L12.4368 13.4973L5.75513 20.1799L5.64868 20.2854L5.54224 20.1799L4.6936 19.3313L4.58813 19.2249L4.6936 19.1194L11.3752 12.4368L4.6936 5.75513L4.58813 5.64868L4.6936 5.54224L5.54224 4.6936L5.64868 4.58813L5.75513 4.6936L12.4368 11.3752L19.1194 4.6936L19.2249 4.58813L19.3313 4.6936Z"
+                        fill="#3D445C" stroke="#3D445C" stroke-width="0.3" />
+                  </svg>
+               </button>
+            </div>
+         </div>
+
+         <div class="map-modal-mobile-container">
+            <div class="tabs-wrapper">
+               <label class="tab-label">
+                  <input type="radio" name="map-tab" class="photo-tab" id="photoTab" checked hidden>
+                  <span>Фото</span>
+               </label>
+               <label class="tab-label">
+                  <input type="radio" name="map-tab" class="map-tab" id="mapTab" hidden>
+                  <span>Мапа</span>
+               </label>
+            </div>
+         </div>
+
+         <img id="mapImage" class="mobile-modal-map map-widget"
+            src="https://salon.ru/storage/thumbs/gallery/5/4178/5000_5000_s193.jpg" alt="карта">
+
+         <img id="photoImage" class="mobile-modal-map modal-photo"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3e_y-BTn1ejQlCqMApYP2ucgmdWSa5gb3zw&s"
+            alt="фото билборда">
+
+
+         <div class="map-modal-mobile-container">
+            <p class="location-text">Івано-Франківськ , Тараса Шевченка, Березівка. Виїзд з Березівки в Тисменичани, ст.
+               А - до Буковелю 81 км
+            </p>
+
+            <table class="map-modal-mobile-info-table">
+               <tbody>
+                  <tr>
+                     <td class="td-name">код</td>
+                     <td class="td-info">351</td>
+                  </tr>
+
+                  <tr>
+                     <td class="td-name">тип</td>
+                     <td class="td-info">Борд</td>
+                  </tr>
+
+                  <tr>
+                     <td class="td-name">сторона</td>
+                     <td class="td-info">А</td>
+                  </tr>
+
+                  <tr>
+                     <td class="td-name">підсвітка</td>
+                     <td class="td-info"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                           viewBox="0 0 18 18" fill="none">
+                           <path d="M6.75 13.5H11.25" stroke="#4FB14B" stroke-width="1.5" stroke-linecap="round"
+                              stroke-linejoin="round" />
+                           <path d="M7.5 16.5H10.5" stroke="#4FB14B" stroke-width="1.5" stroke-linecap="round"
+                              stroke-linejoin="round" />
+                           <path
+                              d="M11.3175 10.5C11.4525 9.765 11.805 9.195 12.375 8.625C12.7371 8.29163 13.0246 7.88537 13.2185 7.43294C13.4124 6.98051 13.5083 6.49216 13.5 6C13.5 4.80653 13.0259 3.66193 12.182 2.81802C11.3381 1.97411 10.1935 1.5 9 1.5C7.80653 1.5 6.66193 1.97411 5.81802 2.81802C4.97411 3.66193 4.5 4.80653 4.5 6C4.5 6.75 4.6725 7.6725 5.625 8.625C6.16804 9.12155 6.5385 9.77839 6.6825 10.5"
+                              stroke="#4FB14B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg></td>
+                  </tr>
+               </tbody>
+            </table>
+
+            <div class="availability-calendar-wrapper">
+               <h3 class="calendar-title">Календар занятості</h3>
+               <div class="availability-calendar-dates-wrapper">
+                  <span class="booked">05</span>
+                  <span class="available">06</span>
+                  <span class="available">07</span>
+                  <span class="available">08</span>
+                  <span class="available">09</span>
+                  <span class="available">10</span>
+                  <span class="available">11</span>
+                  <span class="available">12</span>
+                  <span>01</span>
+                  <span>02</span>
+                  <span>03</span>
+                  <span>04</span>
+               </div>
+            </div>
+
+            <div class="map-modal-mobile-price-wrapper">
+               <span class="text">вартість оренди, міс.</span>
+               <span class="price">52 200 ₴</span>
+            </div>
+
+            <label class="select-construction-label-mobile">
+               <input type="checkbox" class="select-construction-mobile-checkbox" checked name="constructions[]"
+                  value="351" hidden>
+               <div class="select-button-mobile">
+                  <span class="to-choose map-modal-checkbox-mobile">Обрати</span>
+                  <span class="choosen map-modal-checkbox-mobile">Обрано</span>
+               </div>
+            </label>
+
+         </div>
+      </div>
+   </div>
+
+
+
+  @include('add.modals')
+  <div id='show-map-modal' class="modal">
+     <div id="map-modal-board"></div>
+  </div>
 <style>
 #manager-map{
     height:600px;
@@ -955,7 +1733,7 @@ body.modal-open {
    width: 100%;
    display: flex;
    justify-content: space-between;
-   align-items: center;
+   /* align-items: center; */
    padding-bottom: 20px;
    border-bottom: 1px solid #E8EBF1;
 }
@@ -1053,9 +1831,9 @@ body.modal-open {
    min-width: 720px;
    margin-bottom: 24px;
    text-align: left;
-   overflow: hidden;
+   /*overflow: hidden;*/
    color: #3D445C;
-   text-overflow: ellipsis;
+   /*text-overflow: ellipsis;*/
    font-size: 13px;
    font-style: normal;
    font-weight: 400;
@@ -1216,7 +1994,7 @@ body.modal-open {
    color: #fff;
 }
 
-.constructions-table .map-btn {
+.constructions-table .show-on-map {
    margin: 0;
    padding: 5px 10px 5px 2px;
    display: flex;
@@ -1256,8 +2034,15 @@ body.modal-open {
    line-height: 130%;
 }
 
+.select-construction-label {
+  width:100%;
+}
+.select-button {
+  width:100%;
+}
 .select-button .to-choose {
    display: flex;
+   width: 100%;
    height: 30px;
    justify-content: center;
    align-items: center;
@@ -1275,6 +2060,7 @@ body.modal-open {
 
 .select-button .choosen {
    display: none;
+   width: 100%;
    height: 30px;
    justify-content: center;
    align-items: center;
@@ -1972,6 +2758,7 @@ tr.selected {
    border-spacing: 0 8px;
    margin-left: -16px;
    margin-right: -16px;
+   border-collapse: separate;
 }
 
 .constructions-table-mobile td {
@@ -1992,7 +2779,7 @@ tr.selected {
    object-fit: cover;
 }
 
-.constructions-table-mobile .map-btn {
+.constructions-table-mobile .show-on-map {
    display: flex;
    padding: 1px 5px 1px 0;
    justify-content: center;
@@ -2316,9 +3103,10 @@ setTimeout(function(){
 
 
 // Pagination functionality
+document.addEventListener("DOMContentLoaded", () => {
 
 const totalItems = 2600;
-let currentPage = 1;
+//let currentPage = 1;
 let rowsPerPage = 25;
 
 const rowsSelect = document.getElementById('rowsPerPage');
@@ -2566,7 +3354,7 @@ document.addEventListener("DOMContentLoaded", function () {
   toggleImages(); // сразу вызвать
 });
 
-
+});
 </script>
 </body>
 
