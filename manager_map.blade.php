@@ -2034,9 +2034,9 @@ body.modal-open {
    line-height: 130%;
 }
 
-/* .select-construction-label {
+.constructions-table.desktop .select-construction-label {
   width:100%;
-} */
+}
 /* .select-button {
   width:100%;
 } */
@@ -3098,7 +3098,7 @@ tr.selected {
 document.addEventListener("DOMContentLoaded", () => {
 
   // ------------------ ПАГИНАЦИЯ ------------------
-  const totalItems = 2600;
+  const totalItems = {{ count($boards) }};
   let currentPage = 1; // Был закомментирован
   let rowsPerPage = 25;
 
