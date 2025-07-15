@@ -2692,6 +2692,7 @@ tr.selected {
 }
 
 .map-modal-content-wrapper {
+   width: 100%;
    padding: 20px;
 }
 
@@ -3094,303 +3095,11 @@ tr.selected {
 
 </style>
 <script>
-setTimeout(function(){
-     //markerCluster.clearMarkers();
-    /*for (var i = 0; i < markers.length; i++) { 
-        markers[i].setOptions({map: map, visible:true});
-    }*/
-}, 2000)
-
-
-// Pagination functionality
 document.addEventListener("DOMContentLoaded", () => {
 
-const totalItems = 2600;
-//let currentPage = 1;
-let rowsPerPage = 25;
-
-const rowsSelect = document.getElementById('rowsPerPage');
-const rangeDisplay = document.getElementById('rangeDisplay');
-const pagesContainer = document.getElementById('pages');
-const prevBtn = document.getElementById('prevPage');
-const nextBtn = document.getElementById('nextPage');
-
-function updatePagination() {
-   const totalPages = Math.ceil(totalItems / rowsPerPage);
-   const startItem = (currentPage - 1) * rowsPerPage + 1;
-   const endItem = Math.min(currentPage * rowsPerPage, totalItems);
-   rangeDisplay.textContent = `${startItem}–${endItem} з ${totalItems}`;
- 
-   pagesContainer.innerHTML = '';
- 
-   const maxVisiblePages = 5;
-   let startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
-   let endPage = startPage + maxVisiblePages - 1;
- 
-   if (endPage > totalPages) {
-     endPage = totalPages;
-     startPage = Math.max(endPage - maxVisiblePages + 1, 1);
-   }
- 
-   for (let i = startPage; i <= endPage; i++) {
-     const btn = document.createElement('button');
-     btn.textContent = i;
-     btn.className = 'page-button' + (i === currentPage ? ' active' : '');
-     btn.addEventListener('click', () => {
-       currentPage = i;
-       updatePagination();
-     });
-     pagesContainer.appendChild(btn);
-   }
- 
-   prevBtn.disabled = currentPage === 1;
-   nextBtn.disabled = currentPage === totalPages;
- }
- 
-
-rowsSelect.addEventListener('change', () => {
-  rowsPerPage = parseInt(rowsSelect.value);
-  currentPage = 1;
-  updatePagination();
-});
-
-prevBtn.addEventListener('click', () => {
-  if (currentPage > 1) {
-    currentPage--;
-    updatePagination();
-  }
-});
-
-nextBtn.addEventListener('click', () => {
-  const totalPages = Math.ceil(totalItems / rowsPerPage);
-  if (currentPage < totalPages) {
-    currentPage++;
-    updatePagination();
-  }
-});
-
-
-updatePagination();
-
-
-// order status modal functionality
-document.querySelectorAll(".close-order-modal-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelector(".order-modal-backdrop").style.display = "none";
-    document.body.classList.remove("modal-open");
-  });
-});
-
-const submitBtn = document.querySelector(".order-submit-btn");
-const backdrop = document.querySelector(".order-modal-backdrop");
-
-if (submitBtn && backdrop) {
-  submitBtn.addEventListener("click", () => {
-    backdrop.style.display = "flex";
-    document.body.classList.add("modal-open");
-  });
-}
-
-
-// map and photo  modal functionality on desktop
-
-  const modalBackdropDesktop = document.querySelector('.map-modal-backdrop');
-  const modalPriceDesktop = modalBackdropDesktop.querySelector('.map-modal-backdrop .price');
-  const modalAddressDesktop = modalBackdropDesktop.querySelector('.map-modal-backdrop .location-text');
-  const modalImageDesktop = modalBackdropDesktop.querySelector('.map-modal-backdrop .modal-photo');
-  const modalCheckboxDesktop = modalBackdropDesktop.querySelector('.photo-modal-desktop-checkbox'); 
-    let currentRow = null;
-
-document.querySelectorAll('.construction-photo-wrapper').forEach(wrapper => {
-  wrapper.addEventListener('click', function () {
-    const row = this.closest('tr');
-    currentRow = row; // сохраняем текущую строку
-
-    const desktopRowPrice = row.querySelector('.desktop-table-price .price')?.textContent.trim() || '';
-    const desktopRowAddress = row.querySelector('.desktop-table-address')?.textContent.trim() || '';
-    const imageElementDesktop = this.querySelector('.construction-photo-desktop'); 
-    const imageSrc = imageElementDesktop?.getAttribute('src') || '';
-
-    modalPriceDesktop.textContent = desktopRowPrice;
-    modalAddressDesktop.textContent = desktopRowAddress;
-    if (modalImageDesktop && imageSrc) {
-      modalImageDesktop.setAttribute('src', imageSrc);
-    }
-
-    // ✅ СИНХРОНИЗАЦИЯ: при открытии модалки
-    const rowCheckbox = row.querySelector('.select-construction-checkbox');
-    if (rowCheckbox && modalCheckboxDesktop) {
-      modalCheckboxDesktop.checked = rowCheckbox.checked;
-    }
-
-    modalBackdropDesktop.style.display = 'flex';
-  });
-});
-
-// ✅ СИНХРОНИЗАЦИЯ: при изменении состояния чекбокса в модалке
-console.log("modalCheckboxDesktop",modalCheckboxDesktop)
-if (modalCheckboxDesktop) {
-   modalCheckboxDesktop.addEventListener('change', function () {
-    if (currentRow) {
-      currentRow.classList.toggle("checked");
-      const rowCheckbox = currentRow.querySelector('.select-construction-checkbox');
-      console.log("rowCheckbox",rowCheckbox)
-      if (rowCheckbox) {
-        rowCheckbox.checked = this.checked;
-      }
-    }
-  });
-}
-
-// Закрытие модалки по кнопке
-modalBackdropDesktop.querySelector('.close-map-modal-btn--cross').addEventListener('click', function () {
-  modalBackdropDesktop.style.display = 'none';
-  currentRow = null;
-});
-
-// Закрытие при клике вне окна
-modalBackdropDesktop.addEventListener('click', function (e) {
-  if (e.target === modalBackdropDesktop) {
-    modalBackdropDesktop.style.display = 'none';
-    currentRow = null;
-  }
-});
-
-
-
-// map and photo  modal functionality on mobile
-document.addEventListener("DOMContentLoaded", () => {
-  const mapBackdropMobile = document.querySelector(".map-modal-backdrop-mobile");
-  const showMapModalBtnMobile = document.querySelector(".mobile-table-info .map-btn");
-  const mapRadio = document.getElementById("mapTab");
-  const photoRadio = document.getElementById("photoTab");
-  const mapImage = document.getElementById("mapImage");
-  const photoImage = document.getElementById("photoImage");
-
-  const closeButtons = document.querySelectorAll(".close-map-modal-btn--cross-mobile");
-  const photoTriggers = document.querySelectorAll(".construction-photo-wrapper-mobile");
-
-  // 🔁 Показать нужное изображение
-  function toggleMapPhoto() {
-    if (mapRadio.checked) {
-      mapImage.style.display = "block";
-      photoImage.style.display = "none";
-    } else {
-      mapImage.style.display = "none";
-      photoImage.style.display = "block";
-    }
-  }
-
-  // ✖ Закрытие модалки
-  closeButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      if (mapBackdropMobile) {
-        mapBackdropMobile.style.display = "none";
-        document.body.classList.remove("modal-open");
-      }
-    });
-  });
-
-  // 📍 Открытие модалки через кнопку "Карта"
-  if (showMapModalBtnMobile && mapBackdropMobile) {
-    showMapModalBtnMobile.addEventListener("click", (e) => {
-      // Явно скрываем десктопную модалку
-      const mapBackdrop = document.querySelector(".map-modal-backdrop");
-      if (mapBackdrop) mapBackdrop.style.display = "none";
-      mapRadio.checked = true;           // Активировать вк��адку "Мапа"
-      mapBackdropMobile.style.display = "flex";
-      document.body.classList.add("modal-open");
-      toggleMapPhoto();
-      // Остановить всплытие, чтобы не сработал обработчик на родителе
-      if (e && e.stopPropagation) e.stopPropagation();
-    });
-  }
-
-  // 🖼 Открытие модалки по клику на фото
-  photoTriggers.forEach(wrapper => {
-    wrapper.addEventListener("click", () => {
-      photoRadio.checked = true;         // Активировать вкладку "Фото"
-      mapBackdropMobile.style.display = "flex";
-      document.body.classList.add("modal-open");
-      toggleMapPhoto();
-    });
-  });
-
-  // 🎛 Переключение фото/карты при изменении radio
-  if (mapRadio && photoRadio) {
-    mapRadio.addEventListener("change", toggleMapPhoto);
-    photoRadio.addEventListener("change", toggleMapPhoto);
-  }
-
-  // 🏁 Инициализация состояния при загрузке
-  toggleMapPhoto();
-});
-
-
-// if mobile table checked - change bg color
-document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll(".constructions-table-mobile .select-button").forEach(function (button) {
-    button.addEventListener("click", function (event) {
-      // Находим ближайший родительский <table>
-      const table = button.closest("table.constructions-table-mobile");
-
-      if (table) {
-        table.classList.toggle("checked");
-      }
-    });
-  });
-});
-
-// if desktop row checked - change bg color
-document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll(".constructions-table .select-button").forEach(function (button) {
-    button.addEventListener("click", function () {
-      const row = button.closest("tr");
-      if (row) {
-        row.classList.toggle("checked");
-      }
-    });
-  });
-});
-
-
-// show map or photo in mobile modal window
-
-document.addEventListener("DOMContentLoaded", function () {
-  const mapRadio = document.getElementById('mapTab');
-  const photoRadio = document.getElementById('photoTab');
-
-  const mapImage = document.getElementById('mapImage');
-  const photoImage = document.getElementById('photoImage');
-
-  function toggleImages() {
-    if (mapRadio.checked) {
-      mapImage.style.display = 'block';
-      photoImage.style.display = 'none';
-    } else {
-      mapImage.style.display = 'none';
-      photoImage.style.display = 'block';
-    }
-  }
-
-  mapRadio.addEventListener('change', toggleImages);
-  photoRadio.addEventListener('change', toggleImages);
-
-  toggleImages(); // сразу вызвать
-});
-
-});
-</script>
-</body>
-
-
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  // Pagination functionality
+  // ------------------ ПАГИНАЦИЯ ------------------
   const totalItems = 2600;
-  let currentPage = 1;
+  let currentPage = 1; // Был закомментирован
   let rowsPerPage = 25;
 
   const rowsSelect = document.getElementById('rowsPerPage');
@@ -3404,16 +3113,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const startItem = (currentPage - 1) * rowsPerPage + 1;
     const endItem = Math.min(currentPage * rowsPerPage, totalItems);
     rangeDisplay.textContent = `${startItem}–${endItem} з ${totalItems}`;
-    pagesContainer.innerHTML = '';
 
+    pagesContainer.innerHTML = '';
     const maxVisiblePages = 5;
     let startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
-    let endPage = startPage + maxVisiblePages - 1;
-
-    if (endPage > totalPages) {
-      endPage = totalPages;
-      startPage = Math.max(endPage - maxVisiblePages + 1, 1);
-    }
+    let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
 
     for (let i = startPage; i <= endPage; i++) {
       const btn = document.createElement('button');
@@ -3430,39 +3134,34 @@ document.addEventListener("DOMContentLoaded", () => {
     nextBtn.disabled = currentPage === totalPages;
   }
 
-  if (rowsSelect) {
-    rowsSelect.addEventListener('change', () => {
-      rowsPerPage = parseInt(rowsSelect.value);
-      currentPage = 1;
+  rowsSelect?.addEventListener('change', () => {
+    rowsPerPage = parseInt(rowsSelect.value);
+    currentPage = 1;
+    updatePagination();
+  });
+
+  prevBtn?.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
       updatePagination();
-    });
-  }
+    }
+  });
 
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      if (currentPage > 1) {
-        currentPage--;
-        updatePagination();
-      }
-    });
-  }
-
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      const totalPages = Math.ceil(totalItems / rowsPerPage);
-      if (currentPage < totalPages) {
-        currentPage++;
-        updatePagination();
-      }
-    });
-  }
+  nextBtn?.addEventListener('click', () => {
+    const totalPages = Math.ceil(totalItems / rowsPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      updatePagination();
+    }
+  });
 
   updatePagination();
 
-  // order status modal functionality
+
+  // ------------------ МОДАЛКА СТАТУСА ЗАКАЗА ------------------
   document.querySelectorAll(".close-order-modal-btn").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelector(".order-modal-backdrop").style.display = "none";
+      document.querySelector(".order-modal-backdrop")?.style.setProperty("display", "none");
       document.body.classList.remove("modal-open");
     });
   });
@@ -3477,11 +3176,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // map and photo modal functionality on desktop
+
+  // ------------------ ДЕСКТОПНАЯ МОДАЛКА ------------------
   const modalBackdropDesktop = document.querySelector('.map-modal-backdrop');
-  const modalPriceDesktop = modalBackdropDesktop.querySelector('.price');
-  const modalAddressDesktop = modalBackdropDesktop.querySelector('.location-text');
-  const modalImageDesktop = modalBackdropDesktop.querySelector('.modal-photo');
+  const modalPriceDesktop = modalBackdropDesktop?.querySelector('.price');
+  const modalAddressDesktop = modalBackdropDesktop?.querySelector('.location-text');
+  const modalImageDesktop = modalBackdropDesktop?.querySelector('.modal-photo');
+  const modalCheckboxDesktop = modalBackdropDesktop?.querySelector('.photo-modal-desktop-checkbox'); 
   let currentRow = null;
 
   document.querySelectorAll('.construction-photo-wrapper').forEach(wrapper => {
@@ -3489,61 +3190,54 @@ document.addEventListener("DOMContentLoaded", () => {
       const row = this.closest('tr');
       currentRow = row;
 
-      const rowCheckbox = row.querySelector('.select-construction-checkbox');
-      const modalCheckbox = modalBackdropDesktop.querySelector('.select-construction-checkbox');
+      const price = row?.querySelector('.desktop-table-price .price')?.textContent.trim() || '';
+      const address = row?.querySelector('.desktop-table-address')?.textContent.trim() || '';
+      const imgSrc = this.querySelector('.construction-photo-desktop')?.getAttribute('src') || '';
 
-      const desktopRowPrice = row.querySelector('.desktop-table-price .price')?.textContent.trim() || '';
-      const desktopRowAddress = row.querySelector('.desktop-table-address')?.textContent.trim() || '';
-      const imageElementDesktop = this.querySelector('.construction-photo-desktop');
-      const imageSrc = imageElementDesktop?.getAttribute('src') || '';
+      if (modalPriceDesktop) modalPriceDesktop.textContent = price;
+      if (modalAddressDesktop) modalAddressDesktop.textContent = address;
+      if (modalImageDesktop && imgSrc) modalImageDesktop.setAttribute('src', imgSrc);
 
-      modalPriceDesktop.textContent = desktopRowPrice;
-      modalAddressDesktop.textContent = desktopRowAddress;
-      if (modalImageDesktop && imageSrc) {
-        modalImageDesktop.setAttribute('src', imageSrc);
-      }
-
-      if (rowCheckbox && modalCheckbox) {
-        modalCheckbox.checked = rowCheckbox.checked;
+      const rowCheckbox = row?.querySelector('.select-construction-checkbox');
+      if (rowCheckbox && modalCheckboxDesktop) {
+        modalCheckboxDesktop.checked = rowCheckbox.checked;
       }
 
       modalBackdropDesktop.style.display = 'flex';
     });
   });
 
-  modalBackdropDesktop.querySelector('.select-construction-checkbox')?.addEventListener('change', function () {
+  modalCheckboxDesktop?.addEventListener('change', function () {
     if (currentRow) {
+      currentRow.classList.toggle("checked");
       const rowCheckbox = currentRow.querySelector('.select-construction-checkbox');
-      if (rowCheckbox) {
-        rowCheckbox.checked = this.checked;
-      }
+      if (rowCheckbox) rowCheckbox.checked = this.checked;
     }
   });
 
-  modalBackdropDesktop.querySelector('.close-map-modal-btn--cross').addEventListener('click', function () {
+  modalBackdropDesktop?.querySelector('.close-map-modal-btn--cross')?.addEventListener('click', () => {
     modalBackdropDesktop.style.display = 'none';
     currentRow = null;
   });
 
-  modalBackdropDesktop.addEventListener('click', function (e) {
+  modalBackdropDesktop?.addEventListener('click', function (e) {
     if (e.target === modalBackdropDesktop) {
       modalBackdropDesktop.style.display = 'none';
       currentRow = null;
     }
   });
 
-  // map and photo modal functionality on mobile
+
+  // ------------------ МОБИЛЬНАЯ МОДАЛКА ------------------
   const mapBackdropMobile = document.querySelector(".map-modal-backdrop-mobile");
   const showMapModalBtnMobile = document.querySelector(".mobile-table-info .map-btn");
   const mapRadio = document.getElementById("mapTab");
   const photoRadio = document.getElementById("photoTab");
   const mapImage = document.getElementById("mapImage");
   const photoImage = document.getElementById("photoImage");
-  const closeButtons = document.querySelectorAll(".close-map-modal-btn--cross-mobile");
-  const photoTriggers = document.querySelectorAll(".construction-photo-wrapper-mobile");
 
-  function toggleMapPhoto() {
-    if (mapRadio.checked) {
+  function toggleImages() {
+    if (mapRadio?.checked) {
       mapImage.style.display = "block";
       photoImage.style.display = "none";
     } else {
@@ -3552,65 +3246,60 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  closeButtons.forEach(btn => {
+  document.querySelectorAll(".close-map-modal-btn--cross-mobile").forEach(btn => {
     btn.addEventListener("click", () => {
-      if (mapBackdropMobile) {
-        mapBackdropMobile.style.display = "none";
-        document.body.classList.remove("modal-open");
-      }
+      mapBackdropMobile.style.display = "none";
+      document.body.classList.remove("modal-open");
     });
   });
 
   if (showMapModalBtnMobile && mapBackdropMobile) {
     showMapModalBtnMobile.addEventListener("click", (e) => {
-      const mapBackdrop = document.querySelector(".map-modal-backdrop");
-      if (mapBackdrop) mapBackdrop.style.display = "none";
+      document.querySelector(".map-modal-backdrop")?.style.setProperty("display", "none");
       mapRadio.checked = true;
       mapBackdropMobile.style.display = "flex";
       document.body.classList.add("modal-open");
-      toggleMapPhoto();
-      if (e && e.stopPropagation) e.stopPropagation();
+      toggleImages();
+      e.stopPropagation();
     });
   }
 
-  photoTriggers.forEach(wrapper => {
+  document.querySelectorAll(".construction-photo-wrapper-mobile").forEach(wrapper => {
     wrapper.addEventListener("click", () => {
       photoRadio.checked = true;
       mapBackdropMobile.style.display = "flex";
       document.body.classList.add("modal-open");
-      toggleMapPhoto();
+      toggleImages();
     });
   });
 
-  if (mapRadio && photoRadio) {
-    mapRadio.addEventListener("change", toggleMapPhoto);
-    photoRadio.addEventListener("change", toggleMapPhoto);
-  }
+  mapRadio?.addEventListener("change", toggleImages);
+  photoRadio?.addEventListener("change", toggleImages);
+  toggleImages();
 
-  toggleMapPhoto();
 
-  // Change row background on checkbox click (desktop)
-  document.querySelectorAll(".constructions-table .select-button").forEach(button => {
-    button.addEventListener("click", function () {
-      const row = button.closest("tr");
-      if (row) {
-        row.classList.toggle("checked");
-      }
-    });
-  });
-
-  // Change table background (mobile)
+  // ------------------ СМЕНА ФОНА В ТАБЛИЦЕ ------------------
   document.querySelectorAll(".constructions-table-mobile .select-button").forEach(button => {
-    button.addEventListener("click", function () {
+    button.addEventListener("click", () => {
       const table = button.closest("table.constructions-table-mobile");
-      if (table) {
-        table.classList.toggle("checked");
-      }
+      if (table) table.classList.toggle("checked");
+    });
+  });
+
+  document.querySelectorAll(".constructions-table .select-button").forEach(button => {
+    button.addEventListener("click", () => {
+      const row = button.closest("tr");
+      if (row) row.classList.toggle("checked");
     });
   });
 
 });
 </script>
+
 </body>
+
+
+
+
 
 
