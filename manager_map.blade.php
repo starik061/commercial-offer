@@ -443,7 +443,19 @@
         });
       });
     });
-    
+    document.querySelectorAll('.select-construction-mobile-checkbox').forEach(checkbox => {
+  checkbox.addEventListener('change', (e) => {
+    const id = e.target.value;
+    if (e.target.checked) {
+      selectedIds.add(id);
+    } else {
+      selectedIds.delete(id);
+    }
+
+    // Обновим таблицу — чтобы перекрасить строки
+    renderPage(currentPage);
+  });
+});
     // Обработчики для фото
     document.querySelectorAll('.construction-photo-wrapper, .construction-photo-wrapper-mobile').forEach(wrapper => {
     wrapper.addEventListener('click', function(e) {
