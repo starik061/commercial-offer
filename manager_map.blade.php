@@ -64,6 +64,9 @@
 
       // Добавляем обработчики событий к новым элементам
       addEventListeners();
+
+      LIST_V_busy_calendar();
+      showOnMapFunc();
     }
 
     // Функция для рендеринга десктопной таблицы
@@ -101,7 +104,7 @@
       const fullAddress = cityPart + formatPart + addrPart || '-';
 
       table.innerHTML = `
-        <tbody>
+        <tbody class="tbody">
           <tr>
             <td class="mobile-table-head">
               <div>
@@ -380,24 +383,32 @@
   
   // Обновление кнопок пагинации
   function updatePaginationControls() {
-    const totalPages = Math.ceil(boards.length / rowsPerPage);
-    pagesContainer.innerHTML = '';
-    
-    prevPageBtn.disabled = (currentPage <= 1);
-    nextPageBtn.disabled = (currentPage >= totalPages);
-    
-    for (let i = 1; i <= totalPages; i++) {
-      const btn = document.createElement('button');
-      btn.textContent = i;
-      btn.classList.add('page-button');
-      if (i === currentPage) btn.classList.add('active');
-      btn.onclick = () => {
-        currentPage = i;
-        renderPage(currentPage);
-      };
-      pagesContainer.appendChild(btn);
-    }
+  const totalPages = Math.ceil(boards.length / rowsPerPage);
+  pagesContainer.innerHTML = '';
+
+  prevPageBtn.disabled = (currentPage <= 1);
+  nextPageBtn.disabled = (currentPage >= totalPages);
+
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, startPage + 3);
+
+  // Корректировка, если ближе к концу списка
+  if (endPage - startPage < 3) {
+    startPage = Math.max(1, endPage - 3);
   }
+
+  for (let i = startPage; i <= endPage; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    btn.classList.add('page-button');
+    if (i === currentPage) btn.classList.add('active');
+    btn.onclick = () => {
+      currentPage = i;
+      renderPage(currentPage);
+    };
+    pagesContainer.appendChild(btn);
+  }
+}
 
 
 //   ч2
@@ -833,7 +844,8 @@
   <div id="manager-map"></div>
 
   <style>
-     .constructions-table .tbody .td-busy .busy-calendar {
+     .constructions-table .tbody .td-busy .busy-calendar,
+     .constructions-table-mobile .tbody .td-busy .busy-calendar {
         position: absolute;
         bottom: 80%;
         display: none;
@@ -845,40 +857,52 @@
         cursor: auto;
      }
      .constructions-table .wrapp-busy,
-     .constructions-table .mob-view .busy-line {
+     .constructions-table-mobile .wrapp-busy,
+     .constructions-table .mob-view .busy-line,
+     .constructions-table-mobile .mob-view .busy-line {
         display: flex;
         flex-direction: row;
      }
      .constructions-table .wrapp-busy .block,
-     .constructions-table .mob-view .busy-line .block {
+     .constructions-table-mobile .wrapp-busy .block,
+     .constructions-table .mob-view .busy-line .block,
+     .constructions-table-mobile .mob-view .busy-line .block {
         width: 100%;
         height: 4px;
      }
      .constructions-table .wrapp-busy .busy,
-     .constructions-table .mob-view .busy-line .wrapp-busy .busy {
+     .constructions-table-mobile .wrapp-busy .busy,
+     .constructions-table .mob-view .busy-line .wrapp-busy .busy,
+     .constructions-table-mobile .mob-view .busy-line .wrapp-busy .busy {
         background: #e84a56;
      }
      .constructions-table .wrapp-busy .free,
-     .constructions-table .mob-view .busy-line .wrapp-busy .free {
+     .constructions-table-mobile .wrapp-busy .free,
+     .constructions-table .mob-view .busy-line .wrapp-busy .free,
+     .constructions-table-mobile .mob-view .busy-line .wrapp-busy .free {
         background: #5cbc59;
      }
      .constructions-table .wrapp-busy .pre-order,
-     .constructions-table .mob-view .busy-line .wrapp-busy .pre-order
-     {
+     .constructions-table-mobile .wrapp-busy .pre-order,
+     .constructions-table .mob-view .busy-line .wrapp-busy .pre-order,
+     .constructions-table-mobile .mob-view .busy-line .wrapp-busy .pre-order {
         background-color: #e6ecf2;
      }
      .constructions-table .wrapp-busy .reserve,
-     .constructions-table .mob-view .busy-line .wrapp-busy .reserve
-     {
+     .constructions-table-mobile .wrapp-busy .reserve,
+     .constructions-table .mob-view .busy-line .wrapp-busy .reserve,
+     .constructions-table-mobile .mob-view .busy-line .wrapp-busy .reserve{
         background-color: #FED648;
      }
 
-     .constructions-table .td-busy{
+     .constructions-table .td-busy,
+     .constructions-table-mobile .td-busy{
         position: relative;
         overflow: unset;
         text-overflow: unset;
      }
-     .constructions-table .td-busy .busy-calendar {
+     .constructions-table .td-busy .busy-calendar,
+     .constructions-table-mobile .td-busy .busy-calendar {
         position: absolute;
         bottom: 80%;
         display: none;
@@ -889,7 +913,8 @@
         box-shadow: 0 4px 20px 1px rgba(177, 177, 177, .5);
         cursor: auto;
      }
-     .constructions-table .td-busy .busy-calendar:before {
+     .constructions-table .td-busy .busy-calendar:before,
+     .constructions-table-mobile .td-busy .busy-calendar:before {
         position: absolute;
         bottom: -13px;
         left: 19px;
@@ -897,23 +922,27 @@
         border-left: 10px solid white;
         content: '';
      }
-     .constructions-table .td-busy .busy-calendar .title-calendar
+     .constructions-table .td-busy .busy-calendar .title-calendar,
+     .constructions-table-mobile .td-busy .busy-calendar .title-calendar
      {
         margin-bottom: 8px;
         font-size: 13px;
         font-weight: bold;
      }
-     .constructions-table .td-busy:hover .busy-calendar {
+     .constructions-table .td-busy:hover .busy-calendar,
+     .constructions-table-mobile .td-busy:hover .busy-calendar {
         z-index: 2;
         display: block;
         height: max-content;
      }
-     .constructions-table .wrapp-busy-table{
+     .constructions-table .wrapp-busy-table,
+     .constructions-table-mobile .wrapp-busy-table{
         display: flex;
         flex-wrap: wrap;
         width: 100%;
      }
-     .constructions-table .wrapp-busy-table .month{
+     .constructions-table .wrapp-busy-table .month,
+     .constructions-table-mobile .wrapp-busy-table .month{
         position: relative;
         cursor: pointer;
         width: 16.6%;
@@ -921,40 +950,49 @@
         border: 1px solid transparent;
         font-size: 14px;
      }
-     .constructions-table .wrapp-busy-table .month a{
+     .constructions-table .wrapp-busy-table .month a,
+     .constructions-table-mobile .wrapp-busy-table .month a{
         display: block;
         padding: 6px 0;
         text-align: center;
         outline: none;
      }
-     .constructions-table .wrapp-busy-table .month{
+     .constructions-table .wrapp-busy-table .month,
+     .constructions-table-mobile .wrapp-busy-table .month{
         outline: none;
      }
-     .constructions-table .wrapp-busy-table .month:nth-child(1){
+     .constructions-table .wrapp-busy-table .month:nth-child(1),
+     .constructions-table-mobile .wrapp-busy-table .month:nth-child(1){
         border-top-left-radius: 3px;
      }
-     .constructions-table  .wrapp-busy-table .month.busy{
+     .constructions-table  .wrapp-busy-table .month.busy,
+     .constructions-table-mobile  .wrapp-busy-table .month.busy{
         border-color: #e84a56;
         background: #e84a56;
         color: white;
      }
-     .constructions-table .wrapp-busy-table .month.free{
+     .constructions-table .wrapp-busy-table .month.free,
+     .constructions-table-mobile .wrapp-busy-table .month.free{
         border-color: #55bc4f;
         background: #55bc4f;
         color: white;
      }
-     .constructions-table .wrapp-busy-table .month.reserve{
+     .constructions-table .wrapp-busy-table .month.reserve,
+     .constructions-table-mobile .wrapp-busy-table .month.reserve{
         background-color: #FED648;
         color: black;
      }
-     .constructions-table .wrapp-busy-table .month.pre-order{
+     .constructions-table .wrapp-busy-table .month.pre-order,
+     .constructions-table-mobile .wrapp-busy-table .month.pre-order{
         background-color: #e6ecf2;
         color: black;
      }
-     .constructions-table .td-busy .busy-calendar .month.reserve{
+     .constructions-table .td-busy .busy-calendar .month.reserve,
+     .constructions-table-mobile .td-busy .busy-calendar .month.reserve{
         background-color: #FED648;
      }
-     .constructions-table .wrapp-busy-table .month.select:before {
+     .constructions-table .wrapp-busy-table .month.select:before,
+     .constructions-table-mobile .wrapp-busy-table .month.select:before {
         position: absolute;
         left: calc(50% - 7.5px);
         top: calc(50% - 7.5px);
@@ -969,7 +1007,8 @@
         content: '';
         transition: all 0.4s;
      }
-     .constructions-table .wrapp-busy-table .month.select:after{
+     .constructions-table .wrapp-busy-table .month.select:after,
+     .constructions-table-mobile .wrapp-busy-table .month.select:after{
         position: absolute;
         left: calc(50% - 7.5px);
         top: calc(50% - 7.5px);
@@ -1134,7 +1173,7 @@
                </tr>
             </thead>
             
-            <tbody id="board-tbody"></tbody>
+            <tbody id="board-tbody" class="tbody"></tbody>
          </table>
  
          <div id="mobile-tables-container"></div>
@@ -1255,7 +1294,7 @@
                   <span>Показати обрані</span>
                </label>
 
-               <button class="order-submit-btn" type="submit">Замовити</button>
+               <button class="order-submit-btn">Замовити</button>
             </div>
 
 
