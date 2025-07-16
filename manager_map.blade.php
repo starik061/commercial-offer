@@ -1,8 +1,9 @@
 @include('add.head')
 <script>
- const boards = @json($boards);
-  const om = @json(request()->get('om') === 'true');
+  const boards = @json($boards);
   const userRole = @json(Auth::check() ? Auth::user()->role_id : null);
+  const isOm = @json(request()->get('om') === 'true');
+  let selectedIds = new Set();
   
 </script>
 <body>
@@ -605,8 +606,9 @@
                   <td class="mobile-table-info">
                      <div class="construction-photo-wrapper-mobile">
                         @if ($board->image != null || $board->scheme != null)
-                           <img class="construction-photo construction-photo-desktop"
-                                src="{{ $board->image ? "/upload/" . $board->image : ($board->scheme ? "/upload/" . $board->scheme : "") }}"
+                           <img class="construction-photo"
+                           width="66" height="48"     
+                           src="{{ $board->image ? "/upload/" . $board->image : ($board->scheme ? "/upload/" . $board->scheme : "") }}"
                                 alt="Фото конструкції">
 
                            <div class="zoom-icon-wrapper">
@@ -763,9 +765,9 @@
             <div class="pagination-info">
                <label for="rowsPerPage">Кількість строк:</label>
                <select id="rowsPerPage">
+                  <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
-                  <option value="100">100</option>
                </select>
                <span id="rangeDisplay">1–25 з {{$boards->count()}}</span>
             </div>
@@ -2944,164 +2946,6 @@ tr.selected {
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ------------------ ПАГИНАЦИЯ ------------------
-  const tbody = document.getElementById("board-tbody");
-  const rowsPerPageSelect = document.getElementById("rowsPerPage");
-  const rangeDisplay = document.getElementById("rangeDisplay");
-  const pagesContainer = document.getElementById("pages");
-  const prevPageBtn = document.getElementById("prevPage");
-  const nextPageBtn = document.getElementById("nextPage");
-
-  let rowsPerPage = parseInt(rowsPerPageSelect.value);
-  let currentPage = 1;
-
-  rowsPerPageSelect.addEventListener('change', () => {
-    rowsPerPage = parseInt(rowsPerPageSelect.value);
-    currentPage = 1;
-    renderTablePage(currentPage);
-  });
-
-  prevPageBtn.addEventListener('click', () => {
-    if (currentPage > 1) {
-      currentPage--;
-      renderTablePage(currentPage);
-    }
-  });
-
-  nextPageBtn.addEventListener('click', () => {
-    const totalPages = Math.ceil(boards.length / rowsPerPage);
-    if (currentPage < totalPages) {
-      currentPage++;
-      renderTablePage(currentPage);
-    }
-  });
-
-  function renderBoardRow(board) {
-    const cityPart = board.city_name && (!userRole || userRole != 1) ? board.city_name : '';
-    const formatPart = board.format ? (cityPart ? ', ' : '') + board.format : '';
-    const addrPart = board.addr ? ((cityPart || formatPart) ? ', ' : '') + board.addr : '';
-    const fullAddress = cityPart + formatPart + addrPart || '-';
-    const showIdOrCode = om ? board.code : board.id;
-    const showPrice = board.approximated_selling_price ? `${board.approximated_selling_price} ₴` : '@lang("message.hidden_price_word")';
-    const photo = board.image || board.scheme;
-    const photoUrl = board.image ? `/upload/${board.image}` : board.scheme ? `/upload/${board.scheme}` : '';
-    const lightColor = board.light == 1 ? '#FC6B40' : '#000';
-
-    return `
-      <tr>
-        <td>
-          <div class="td-code" data-code="${board.id}" data-select-month="">
-            ${om ? showIdOrCode : `<a href="/${board.aleas}" target="_blank">${showIdOrCode}</a>`}
-          </div>
-        </td>
-        <td>
-          ${om ? board.board_type : `<a href="/${board.aleas}" target="_blank">${board.board_type}</a>`}
-        </td>
-        <td class="desktop-table-address">
-          ${om ? fullAddress : `<a href="/${board.aleas}" target="_blank">${fullAddress}</a>`}
-        </td>
-        <td>
-          ${om ? board.side_type : `<a href="/${board.aleas}" target="_blank">${board.side_type}</a>`}
-        </td>
-        <td>
-          <svg class="lighting" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M6.75 13.5H11.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="${lightColor}"/>
-            <path d="M7.5 16.5H10.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="${lightColor}"/>
-            <path d="M11.3175 10.5C11.4525 9.765 11.805 9.195 12.375 8.625C12.7371 8.29163 13.0246 7.88537 13.2185 7.43294C13.4124 6.98051 13.5083 6.49216 13.5 6C13.5 4.80653 13.0259 3.66193 12.182 2.81802C11.3381 1.97411 10.1935 1.5 9 1.5C7.80653 1.5 6.66193 1.97411 5.81802 2.81802C4.97411 3.66193 4.5 4.80653 4.5 6C4.5 6.75 4.6725 7.6725 5.625 8.625C6.16804 9.12155 6.5385 9.77839 6.6825 10.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="${lightColor}"/>
-          </svg>
-        </td>
-        <td>
-          ${photo ? `
-          <div class="construction-photo-wrapper">
-            <img class="construction-photo construction-photo-desktop" src="${photoUrl}" alt="Фото конструкції">
-            <div class="zoom-icon-wrapper">
-              <svg class="zoom-icon img" xmlns="http://www.w3.org/2000/svg" width="8" height="8" data-alias="ua/${board.aleas}" data-id="${board.id}" data-img="${board.image ? `/upload/${board.image}|` : ''}${board.scheme ? `/upload/${board.scheme}` : ''}" viewBox="0 0 8 8" fill="none">
-                <path d="M3.65918 0.250122C5.54196 0.250135 7.06836 1.77652 7.06836 3.6593C7.06833 4.51315 6.75311 5.29265 6.23438 5.89075L7.70312 7.54211L7.23633 7.95813L5.7832 6.32434C5.20048 6.78937 4.46267 7.06848 3.65918 7.06848C1.77642 7.06848 0.250061 5.54204 0.25 3.6593C0.25 1.77651 1.77639 0.250122 3.65918 0.250122ZM3.65918 0.875122C2.12156 0.875122 0.875 2.12169 0.875 3.6593C0.875061 5.19687 2.1216 6.44348 3.65918 6.44348C5.19675 6.44347 6.4433 5.19686 6.44336 3.6593C6.44336 2.12169 5.19678 0.875135 3.65918 0.875122Z" fill="currentColor" />
-              </svg>
-            </div>
-          </div>
-          ` : ''}
-        </td>
-        <td>
-          ${board.x && board.y ? `
-            <button class="show-on-map">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.72092 1.01161C5.88421 0.918303 6.08334 0.912776 6.25156 0.996885L11.9823 3.86226L16.9709 1.01161C17.145 0.91213 17.3589 0.912845 17.5323 1.01349C17.7058 1.11413 17.8125 1.29949 17.8125 1.5V13.5C17.8125 13.7019 17.7043 13.8882 17.5291 13.9884L12.2791 16.9884C12.1158 17.0817 11.9167 17.0872 11.7484 17.0031L6.0177 14.1377L1.02908 16.9884C0.854983 17.0879 0.641093 17.0872 0.467666 16.9865C0.294239 16.8859 0.1875 16.7005 0.1875 16.5V4.5C0.1875 4.29814 0.295661 4.11176 0.470922 4.01161L5.72092 1.01161Z" fill="#FC6B40"/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.9375C6.31066 0.9375 6.5625 1.18934 6.5625 1.5V13.5C6.5625 13.8107 6.31066 14.0625 6 14.0625C5.68934 14.0625 5.4375 13.8107 5.4375 13.5V1.5C5.4375 1.18934 5.68934 0.9375 6 0.9375Z" fill="#FC6B40"/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.9375C12.3107 3.9375 12.5625 4.18934 12.5625 4.5V16.5C12.5625 16.8107 12.3107 17.0625 12 17.0625C11.6893 17.0625 11.4375 16.8107 11.4375 16.5V4.5C11.4375 4.18934 11.6893 3.9375 12 3.9375Z" fill="#FC6B40"/>
-              </svg>
-            </button>` : ''}
-        </td>
-        <td class="td-busy" data-basket="${board.basket}" data-busy="${board.reserve}">&nbsp;</td>
-        <td class="desktop-table-price">
-          <div class="price">
-            <a href="#" class="cost-board">${showPrice}</a>
-          </div>
-        </td>
-        <td>
-          <label class="select-construction-label">
-            <input type="checkbox" class="select-construction-checkbox" name="id[]" value="${board.id}" hidden>
-            <div class="select-button">
-              <span class="to-choose">Обрати</span>
-              <span class="choosen">Обрано</span>
-            </div>
-          </label>
-        </td>
-      </tr>`;
-  }
-
-  function renderTablePage(page) {
-    tbody.innerHTML = '';
-    const start = (page - 1) * rowsPerPage;
-    const pageData = boards.slice(start, start + rowsPerPage);
-    pageData.forEach(board => tbody.innerHTML += renderBoardRow(board));
-    updatePaginationControls();
-    updateRangeDisplay(start, pageData.length);
-  }
-
-  function updateRangeDisplay(start, count) {
-    const end = start + count;
-    rangeDisplay.textContent = `${start + 1}–${end} з ${boards.length}`;
-  }
-
-  function updatePaginationControls() {
-    const totalPages = Math.ceil(boards.length / rowsPerPage);
-    pagesContainer.innerHTML = '';
-    for (let i = 1; i <= totalPages; i++) {
-      const btn = document.createElement('button');
-      btn.textContent = i;
-      btn.classList.add('page-button');
-      if (i === currentPage) btn.classList.add('active');
-      btn.onclick = () => {
-        currentPage = i;
-        renderTablePage(currentPage);
-      };
-      pagesContainer.appendChild(btn);
-    }
-  }
-
-  renderTablePage(currentPage);
-
-
-  // ------------------ МОДАЛКА СТАТУСА ЗАКАЗА ------------------
-  document.querySelectorAll(".close-order-modal-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelector(".order-modal-backdrop")?.style.setProperty("display", "none");
-      document.body.classList.remove("modal-open");
-    });
-  });
-
-  const submitBtn = document.querySelector(".order-submit-btn");
-  const backdrop = document.querySelector(".order-modal-backdrop");
-
-  if (submitBtn && backdrop) {
-    submitBtn.addEventListener("click", () => {
-      backdrop.style.display = "flex";
-      document.body.classList.add("modal-open");
-    });
-  }
-
-
   // ------------------ ДЕСКТОПНАЯ МОДАЛКА ------------------
   const modalBackdropDesktop = document.querySelector('.map-modal-backdrop');
   const modalPriceDesktop = modalBackdropDesktop?.querySelector('.price');
@@ -3151,6 +2995,376 @@ document.addEventListener("DOMContentLoaded", () => {
       currentRow = null;
     }
   });
+
+  // ------------------ ПАГИНАЦИЯ ------------------
+//   const tbody = document.getElementById("board-tbody");
+//   const rowsPerPageSelect = document.getElementById("rowsPerPage");
+//   const rangeDisplay = document.getElementById("rangeDisplay");
+//   const pagesContainer = document.getElementById("pages");
+//   const prevPageBtn = document.getElementById("prevPage");
+//   const nextPageBtn = document.getElementById("nextPage");
+
+//   let rowsPerPage = parseInt(rowsPerPageSelect.value);
+//   let currentPage = 1;
+
+//   rowsPerPageSelect.addEventListener('change', () => {
+//     rowsPerPage = parseInt(rowsPerPageSelect.value);
+//     currentPage = 1;
+//     renderTablePage(currentPage);
+//   });
+
+//   prevPageBtn.addEventListener('click', () => {
+//     if (currentPage > 1) {
+//       currentPage--;
+//       renderTablePage(currentPage);
+//     }
+//   });
+
+//   nextPageBtn.addEventListener('click', () => {
+//     const totalPages = Math.ceil(boards.length / rowsPerPage);
+//     if (currentPage < totalPages) {
+//       currentPage++;
+//       renderTablePage(currentPage);
+//     }
+//   });
+
+//   function renderBoardRow(board) {
+//     const cityPart = board.city_name && (!userRole || userRole != 1) ? board.city_name : '';
+//     const formatPart = board.format ? (cityPart ? ', ' : '') + board.format : '';
+//     const addrPart = board.addr ? ((cityPart || formatPart) ? ', ' : '') + board.addr : '';
+//     const fullAddress = cityPart + formatPart + addrPart || '-';
+//     const showIdOrCode = om ? board.code : board.id;
+//     const showPrice = board.approximated_selling_price ? `${board.approximated_selling_price} ₴` : '@lang("message.hidden_price_word")';
+//     const photo = board.image || board.scheme;
+//     const photoUrl = board.image ? `/upload/${board.image}` : board.scheme ? `/upload/${board.scheme}` : '';
+//     const lightColor = board.light == 1 ? '#4FB14B' : '#ADB0B9';
+
+//     return `
+//       <tr>
+//         <td>
+//           <div class="td-code" data-code="${board.id}" data-select-month="">
+//             ${om ? showIdOrCode : `<a href="/${board.aleas}" target="_blank">${showIdOrCode}</a>`}
+//           </div>
+//         </td>
+//         <td>
+//           ${om ? board.board_type : `<a href="/${board.aleas}" target="_blank">${board.board_type}</a>`}
+//         </td>
+//         <td class="desktop-table-address">
+//           ${om ? fullAddress : `<a href="/${board.aleas}" target="_blank">${fullAddress}</a>`}
+//         </td>
+//         <td>
+//           ${om ? board.side_type : `<a href="/${board.aleas}" target="_blank">${board.side_type}</a>`}
+//         </td>
+//         <td>
+//         <svg class="lighting" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+//             <path d="M6.75 13.5H11.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="${lightColor}"/>
+//             <path d="M7.5 16.5H10.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="${lightColor}"/>
+//             <path d="M11.3175 10.5C11.4525 9.765 11.805 9.195 12.375 8.625C12.7371 8.29163 13.0246 7.88537 13.2185 7.43294C13.4124 6.98051 13.5083 6.49216 13.5 6C13.5 4.80653 13.0259 3.66193 12.182 2.81802C11.3381 1.97411 10.1935 1.5 9 1.5C7.80653 1.5 6.66193 1.97411 5.81802 2.81802C4.97411 3.66193 4.5 4.80653 4.5 6C4.5 6.75 4.6725 7.6725 5.625 8.625C6.16804 9.12155 6.5385 9.77839 6.6825 10.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="${lightColor}"/>
+//           </svg>
+//         </td>
+//         <td>
+//           ${photo ? `
+//           <div class="construction-photo-wrapper">
+//             <img class="construction-photo construction-photo-desktop" src="${photoUrl}" alt="Фото конструкції">
+//             <div class="zoom-icon-wrapper">
+//               <svg class="zoom-icon img" xmlns="http://www.w3.org/2000/svg" width="8" height="8" data-alias="ua/${board.aleas}" data-id="${board.id}" data-img="${board.image ? `/upload/${board.image}|` : ''}${board.scheme ? `/upload/${board.scheme}` : ''}" viewBox="0 0 8 8" fill="none">
+//                 <path d="M3.65918 0.250122C5.54196 0.250135 7.06836 1.77652 7.06836 3.6593C7.06833 4.51315 6.75311 5.29265 6.23438 5.89075L7.70312 7.54211L7.23633 7.95813L5.7832 6.32434C5.20048 6.78937 4.46267 7.06848 3.65918 7.06848C1.77642 7.06848 0.250061 5.54204 0.25 3.6593C0.25 1.77651 1.77639 0.250122 3.65918 0.250122ZM3.65918 0.875122C2.12156 0.875122 0.875 2.12169 0.875 3.6593C0.875061 5.19687 2.1216 6.44348 3.65918 6.44348C5.19675 6.44347 6.4433 5.19686 6.44336 3.6593C6.44336 2.12169 5.19678 0.875135 3.65918 0.875122Z" fill="currentColor" />
+//               </svg>
+//             </div>
+//           </div>
+//           ` : ''}
+//         </td>
+//         <td>
+//           ${board.x && board.y ? `
+//             <button class="show-on-map">
+//               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+//                            <g clip-path="url(#clip0_1_1882)">
+//                               <path fill-rule="evenodd" clip-rule="evenodd"
+//                                  d="M5.72092 1.01161C5.88421 0.918303 6.08334 0.912776 6.25156 0.996885L11.9823 3.86226L16.9709 1.01161C17.145 0.91213 17.3589 0.912845 17.5323 1.01349C17.7058 1.11413 17.8125 1.29949 17.8125 1.5V13.5C17.8125 13.7019 17.7043 13.8882 17.5291 13.9884L12.2791 16.9884C12.1158 17.0817 11.9167 17.0872 11.7484 17.0031L6.0177 14.1377L1.02908 16.9884C0.854983 17.0879 0.641093 17.0872 0.467666 16.9865C0.294239 16.8859 0.1875 16.7005 0.1875 16.5V4.5C0.1875 4.29814 0.295661 4.11176 0.470922 4.01161L5.72092 1.01161ZM6.0177 2.13775L1.3125 4.82643V15.5307L5.72092 13.0116C5.88421 12.9183 6.08334 12.9128 6.25156 12.9969L11.9823 15.8623L16.6875 13.1736V2.46929L12.2791 4.98839C12.1158 5.0817 11.9167 5.08722 11.7484 5.00312L6.0177 2.13775Z"
+//                                  fill="#FC6B40" />
+//                               <path fill-rule="evenodd" clip-rule="evenodd"
+//                                  d="M6 0.9375C6.31066 0.9375 6.5625 1.18934 6.5625 1.5V13.5C6.5625 13.8107 6.31066 14.0625 6 14.0625C5.68934 14.0625 5.4375 13.8107 5.4375 13.5V1.5C5.4375 1.18934 5.68934 0.9375 6 0.9375Z"
+//                                  fill="#FC6B40" />
+//                               <path fill-rule="evenodd" clip-rule="evenodd"
+//                                  d="M12 3.9375C12.3107 3.9375 12.5625 4.18934 12.5625 4.5V16.5C12.5625 16.8107 12.3107 17.0625 12 17.0625C11.6893 17.0625 11.4375 16.8107 11.4375 16.5V4.5C11.4375 4.18934 11.6893 3.9375 12 3.9375Z"
+//                                  fill="#FC6B40" />
+//                            </g>
+//                            <defs>
+//                               <clipPath id="clip0_1_1882">
+//                                  <rect width="18" height="18" fill="white" />
+//                               </clipPath>
+//                            </defs>
+//                         </svg>
+//             </button>` : ''}
+//         </td>
+//         <td class="td-busy" data-basket="${board.basket}" data-busy="${board.reserve}">&nbsp;</td>
+//         <td class="desktop-table-price">
+//           <div class="price">
+//             <a href="#" class="cost-board">${showPrice}</a>
+//           </div>
+//         </td>
+//         <td>
+//           <label class="select-construction-label">
+//             <input type="checkbox" class="select-construction-checkbox" name="id[]" value="${board.id}" hidden>
+//             <div class="select-button">
+//               <span class="to-choose">Обрати</span>
+//               <span class="choosen">Обрано</span>
+//             </div>
+//           </label>
+//         </td>
+//       </tr>`;
+//   }
+
+//   function renderTablePage(page) {
+//     tbody.innerHTML = '';
+//     const start = (page - 1) * rowsPerPage;
+//     const pageData = boards.slice(start, start + rowsPerPage);
+//     pageData.forEach(board => tbody.innerHTML += renderBoardRow(board));
+//     updatePaginationControls();
+//     updateRangeDisplay(start, pageData.length);
+//   }
+
+//   function updateRangeDisplay(start, count) {
+//     const end = start + count;
+//     rangeDisplay.textContent = `${start + 1}–${end} з ${boards.length}`;
+//   }
+
+//   function updatePaginationControls() {
+//     const totalPages = Math.ceil(boards.length / rowsPerPage);
+//     pagesContainer.innerHTML = '';
+//     for (let i = 1; i <= totalPages; i++) {
+//       const btn = document.createElement('button');
+//       btn.textContent = i;
+//       btn.classList.add('page-button');
+//       if (i === currentPage) btn.classList.add('active');
+//       btn.onclick = () => {
+//         currentPage = i;
+//         renderTablePage(currentPage);
+//       };
+//       pagesContainer.appendChild(btn);
+//     }
+//   }
+
+//   renderTablePage(currentPage);
+const tbody = document.getElementById("board-tbody");
+  const rowsPerPageSelect = document.getElementById("rowsPerPage");
+  const rangeDisplay = document.getElementById("rangeDisplay");
+  const pagesContainer = document.getElementById("pages");
+  const prevPageBtn = document.getElementById("prevPage");
+  const nextPageBtn = document.getElementById("nextPage");
+
+  let rowsPerPage = parseInt(rowsPerPageSelect.value);
+  let currentPage = 1;
+
+  rowsPerPageSelect.addEventListener('change', () => {
+    rowsPerPage = parseInt(rowsPerPageSelect.value);
+    currentPage = 1;
+    renderTablePage(currentPage);
+  });
+
+  prevPageBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderTablePage(currentPage);
+    }
+  });
+
+  nextPageBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(boards.length / rowsPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderTablePage(currentPage);
+    }
+  });
+
+  function renderBoardRow(board) {
+    const checked = selectedIds.has(String(board.id)) ? 'checked' : '';
+    const selectedClass = checked ? 'selected' : '';
+
+    return `
+      <tr class="${selectedClass}">
+        <td>
+          <div class="td-code" data-code="${board.id}" data-select-month="">
+            ${isOm ? board.code : `<a href="/${board.aleas}" target="_blank">${board.id}</a>`}
+          </div>
+        </td>
+        <td>${isOm ? board.board_type : `<a href="/${board.aleas}" target="_blank">${board.board_type}</a>`}</td>
+        <td class="desktop-table-address">
+          ${isOm ? formatAddress(board) : `<a href="/${board.aleas}" target="_blank">${formatAddress(board)}</a>`}
+        </td>
+        <td>${isOm ? board.side_type : `<a href="/${board.aleas}" target="_blank">${board.side_type}</a>`}</td>
+        <td>${renderLightingSvg(board.light)}</td>
+        <td>${renderPhotoCell(board)}</td>
+        <td>${board.x && board.y ? renderMapButton() : ''}</td>
+        <td class="td-busy" data-basket="${board.basket}" data-busy="${board.reserve}"></td>
+        <td class="desktop-table-price">
+          <div class="price">
+            ${renderPrice(board)}
+          </div>
+        </td>
+        <td>
+          <label class="select-construction-label">
+            <input type="checkbox" class="select-construction-checkbox" name="id[]" value="${board.id}" hidden ${checked}>
+            <div class="select-button">
+              <span class="to-choose">Обрати</span>
+              <span class="choosen">Обрано</span>
+            </div>
+          </label>
+        </td>
+      </tr>`;
+  }
+
+  function formatAddress(board) {
+    const showCity = !userRole || userRole != 1;
+    let parts = [];
+    if (showCity && board.city_name) parts.push(board.city_name);
+    if (board.format) parts.push(board.format);
+    if (board.addr) parts.push(board.addr);
+    return parts.length ? parts.join(', ') : '-';
+  }
+
+  function renderLightingSvg(light) {
+    const stroke = light == 1 ? '#4FB14B' : '#ADB0B9';
+    return `<svg class="lighting" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path d="M6.75 13.5H11.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="${stroke}"/>
+      <path d="M7.5 16.5H10.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="${stroke}"/>
+      
+      <path d="M11.3175 10.5C11.4525 9.765 11.805 9.195 12.375 8.625C12.7371 8.29163 13.0246 7.88537 13.2185 7.43294C13.4124 6.98051 13.5083 6.49216 13.5 6C13.5 4.80653 13.0259 3.66193 12.182 2.81802C11.3381 1.97411 10.1935 1.5 9 1.5C7.80653 1.5 6.66193 1.97411 5.81802 2.81802C4.97411 3.66193 4.5 4.80653 4.5 6C4.5 6.75 4.6725 7.6725 5.625 8.625C6.16804 9.12155 6.5385 9.77839 6.6825 10.5"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="${stroke}"/></svg>`;
+  }
+
+  function renderPhotoCell(board) {
+    if (!board.image && !board.scheme) return '';
+    const imgSrc = board.image ? `/upload/${board.image}` : `/upload/${board.scheme}`;
+    const fullImg = `${board.image ? `/upload/${board.image}|` : ''}${board.scheme ? `/upload/${board.scheme}` : ''}`;
+    return `<div class="construction-photo-wrapper">
+      <img class="construction-photo construction-photo-desktop" src="${imgSrc}" alt="Фото конструкції">
+      <div class="zoom-icon-wrapper">
+              <svg class="zoom-icon img" xmlns="http://www.w3.org/2000/svg" width="8" height="8" data-alias="ua/${board.aleas}" data-id="${board.id}" data-img="${board.image ? `/upload/${board.image}|` : ''}${board.scheme ? `/upload/${board.scheme}` : ''}" viewBox="0 0 8 8" fill="none">
+                <path d="M3.65918 0.250122C5.54196 0.250135 7.06836 1.77652 7.06836 3.6593C7.06833 4.51315 6.75311 5.29265 6.23438 5.89075L7.70312 7.54211L7.23633 7.95813L5.7832 6.32434C5.20048 6.78937 4.46267 7.06848 3.65918 7.06848C1.77642 7.06848 0.250061 5.54204 0.25 3.6593C0.25 1.77651 1.77639 0.250122 3.65918 0.250122ZM3.65918 0.875122C2.12156 0.875122 0.875 2.12169 0.875 3.6593C0.875061 5.19687 2.1216 6.44348 3.65918 6.44348C5.19675 6.44347 6.4433 5.19686 6.44336 3.6593C6.44336 2.12169 5.19678 0.875135 3.65918 0.875122Z" fill="currentColor" />
+              </svg>
+            </div>
+    </div>`;
+  }
+
+  function renderMapButton() {
+    return `<button class="show-on-map">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                           <g clip-path="url(#clip0_1_1882)">
+                              <path fill-rule="evenodd" clip-rule="evenodd"
+                                 d="M5.72092 1.01161C5.88421 0.918303 6.08334 0.912776 6.25156 0.996885L11.9823 3.86226L16.9709 1.01161C17.145 0.91213 17.3589 0.912845 17.5323 1.01349C17.7058 1.11413 17.8125 1.29949 17.8125 1.5V13.5C17.8125 13.7019 17.7043 13.8882 17.5291 13.9884L12.2791 16.9884C12.1158 17.0817 11.9167 17.0872 11.7484 17.0031L6.0177 14.1377L1.02908 16.9884C0.854983 17.0879 0.641093 17.0872 0.467666 16.9865C0.294239 16.8859 0.1875 16.7005 0.1875 16.5V4.5C0.1875 4.29814 0.295661 4.11176 0.470922 4.01161L5.72092 1.01161ZM6.0177 2.13775L1.3125 4.82643V15.5307L5.72092 13.0116C5.88421 12.9183 6.08334 12.9128 6.25156 12.9969L11.9823 15.8623L16.6875 13.1736V2.46929L12.2791 4.98839C12.1158 5.0817 11.9167 5.08722 11.7484 5.00312L6.0177 2.13775Z"
+                                 fill="#FC6B40" />
+                              <path fill-rule="evenodd" clip-rule="evenodd"
+                                 d="M6 0.9375C6.31066 0.9375 6.5625 1.18934 6.5625 1.5V13.5C6.5625 13.8107 6.31066 14.0625 6 14.0625C5.68934 14.0625 5.4375 13.8107 5.4375 13.5V1.5C5.4375 1.18934 5.68934 0.9375 6 0.9375Z"
+                                 fill="#FC6B40" />
+                              <path fill-rule="evenodd" clip-rule="evenodd"
+                                 d="M12 3.9375C12.3107 3.9375 12.5625 4.18934 12.5625 4.5V16.5C12.5625 16.8107 12.3107 17.0625 12 17.0625C11.6893 17.0625 11.4375 16.8107 11.4375 16.5V4.5C11.4375 4.18934 11.6893 3.9375 12 3.9375Z"
+                                 fill="#FC6B40" />
+                           </g>
+                           <defs>
+                              <clipPath id="clip0_1_1882">
+                                 <rect width="18" height="18" fill="white" />
+                              </clipPath>
+                           </defs>
+                        </svg>
+</button>`;
+  }
+
+  function renderPrice(board) {
+    if (userRole && userRole < 3) return `<a href="#" class="cost-board">${board.approximated_selling_price} ₴</a>`;
+    if (isOm) return `<a href="#" class="cost-board">${board.approximated_selling_price} ₴</a>`;
+    if (!board.approximated_selling_price) return `<a href="#" class="cost-board">@lang('message.hidden_price_word')</a>`;
+    return `<a href="#" class="cost-board">${board.approximated_selling_price} ₴</a>`;
+  }
+
+  function addRowEventListeners() {
+    document.querySelectorAll('.select-construction-checkbox').forEach(ch => {
+      ch.addEventListener('change', function () {
+        const id = this.value;
+        const row = this.closest('tr');
+        if (this.checked) {
+          selectedIds.add(id);
+          row.classList.add('selected');
+        } else {
+          selectedIds.delete(id);
+          row.classList.remove('selected');
+        }
+      });
+    });
+
+    document.querySelectorAll('.construction-photo-wrapper').forEach(wrapper => {
+    wrapper.addEventListener('click', function () {
+      const row = this.closest('tr');
+      currentRow = row;
+
+      const price = row?.querySelector('.desktop-table-price .price')?.textContent.trim() || '';
+      const address = row?.querySelector('.desktop-table-address')?.textContent.trim() || '';
+      const imgSrc = this.querySelector('.construction-photo-desktop')?.getAttribute('src') || '';
+
+      if (modalPriceDesktop) modalPriceDesktop.textContent = price;
+      if (modalAddressDesktop) modalAddressDesktop.textContent = address;
+      if (modalImageDesktop && imgSrc) modalImageDesktop.setAttribute('src', imgSrc);
+
+      const rowCheckbox = row?.querySelector('.select-construction-checkbox');
+      if (rowCheckbox && modalCheckboxDesktop) {
+        modalCheckboxDesktop.checked = rowCheckbox.checked;
+      }
+
+      modalBackdropDesktop.style.display = 'flex';
+    });
+  });
+  
+  }
+
+  function renderTablePage(page) {
+    tbody.innerHTML = '';
+    const start = (page - 1) * rowsPerPage;
+    const pageData = boards.slice(start, start + rowsPerPage);
+    pageData.forEach(board => tbody.innerHTML += renderBoardRow(board));
+    updatePaginationControls();
+    updateRangeDisplay(start, pageData.length);
+    addRowEventListeners();
+  }
+
+  function updateRangeDisplay(start, count) {
+    const end = start + count;
+    rangeDisplay.textContent = `${start + 1}–${end} з ${boards.length}`;
+  }
+
+  function updatePaginationControls() {
+    const totalPages = Math.ceil(boards.length / rowsPerPage);
+    pagesContainer.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.classList.add('page-button');
+      if (i === currentPage) btn.classList.add('active');
+      btn.onclick = () => {
+        currentPage = i;
+        renderTablePage(currentPage);
+      };
+      pagesContainer.appendChild(btn);
+    }
+  }
+
+  renderTablePage(currentPage);
+
+  // ------------------ МОДАЛКА СТАТУСА ЗАКАЗА ------------------
+  document.querySelectorAll(".close-order-modal-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelector(".order-modal-backdrop")?.style.setProperty("display", "none");
+      document.body.classList.remove("modal-open");
+    });
+  });
+
+  const submitBtn = document.querySelector(".order-submit-btn");
+  const backdrop = document.querySelector(".order-modal-backdrop");
+
+  if (submitBtn && backdrop) {
+    submitBtn.addEventListener("click", () => {
+      backdrop.style.display = "flex";
+      document.body.classList.add("modal-open");
+    });
+  }
 
 
   // ------------------ МОБИЛЬНАЯ МОДАЛКА ------------------
