@@ -157,11 +157,11 @@
             <td class="mobile-table-info">
               <svg class="lighting" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                   viewBox="0 0 18 18" fill="none">
-                <path d="M6.75 13.5H11.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ${board.light == 1 ? 'stroke="#FC6B40"' : ''}/>
-                <path d="M7.5 16.5H10.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ${board.light == 1 ? 'stroke="#FC6B40"' : ''}/>
+                <path d="M6.75 13.5H11.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ${board.light == 1 ? 'stroke="#4FB14B"' : 'stroke="#ADB0B9"'}/>
+                <path d="M7.5 16.5H10.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ${board.light == 1 ? 'stroke="#4FB14B"' : 'stroke="#ADB0B9"'}/>
                 <path
                     d="M11.3175 10.5C11.4525 9.765 11.805 9.195 12.375 8.625C12.7371 8.29163 13.0246 7.88537 13.2185 7.43294C13.4124 6.98051 13.5083 6.49216 13.5 6C13.5 4.80653 13.0259 3.66193 12.182 2.81802C11.3381 1.97411 10.1935 1.5 9 1.5C7.80653 1.5 6.66193 1.97411 5.81802 2.81802C4.97411 3.66193 4.5 4.80653 4.5 6C4.5 6.75 4.6725 7.6725 5.625 8.625C6.16804 9.12155 6.5385 9.77839 6.6825 10.5"
-                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ${board.light == 1 ? 'stroke="#FC6B40"' : ''}/>
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ${board.light == 1 ? 'stroke="#4FB14B"' : 'stroke="#ADB0B9"'}/>
             </svg>
           </td>
         </tr>
@@ -3368,11 +3368,8 @@ tr.selected {
 .select-construction-label-mobile:has(.select-construction-mobile-checkbox:checked) .choosen {
    display: flex;
 }
-
 </style>
-<script>
 
-</script>
 
 </body>
 
