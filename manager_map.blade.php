@@ -2313,6 +2313,9 @@ body.modal-open {
 .constructions-table.desktop .select-construction-label {
   width:100%;
 }
+.constructions-table-mobile .select-construction-label {
+  width:100%;
+}
 /* .select-button {
   width:100%;
 } */
